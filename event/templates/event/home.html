@@ -1,0 +1,15 @@
+{% extends 'event/base.html' %}
+{% block title %} Evyfy | Home {% endblock %}
+{% block content %}
+
+<h3>Home ready !!!</h3>
+<h2>Event List</h2>
+<ul>
+    {% for artist in object_list %}
+    <li>
+        {{artist.name}}
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
