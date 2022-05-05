@@ -6,7 +6,7 @@ from django import forms
 
 from event.models import Member, User
 
-#Admin Register form
+#Admin Register/Login form
 class UserNewCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = Member
@@ -40,7 +40,3 @@ class UserSignUpForm(UserCreationForm):
         return user   
 #END User Register Form
 
-
-class AdminLogin(forms.Form):
-    email = forms.EmailField(max_length=150)
-    password = forms.CharField(max_length=50, widget=forms.PasswordInput)

@@ -31,24 +31,27 @@ class main(View):
 #Profile
 #..............................................??????????????????Have to check return statement............return none value error occured????????
 class AdminLogin(View):
-    model = User
-    template_name = "account/adminlogin.html"   
-    form_class = AdminLogin
+    template_name = "account/adminlogin.html"
     def get(self, request):
-        if request.method == "POST":
-            form = self.form_class(request.POST)
-            if form.is_valid():
-                email = form.cleaned_data.get('email')
-                password = form.cleaned_data.get('password')
-                user = User.objects.create_user(email, password)
-                try:
-                    user = User.objects.get(email=email, password=password)
-                    return render(request, 'event/home.html', {'user':user})
-                except:
-                    messages.success(request, 'Error, either Email or Password is not correct')
-            else:
-                form = AdminLogin()
-            return render(request, self.template_name)
+        return render(request, self.template_name)
+#     model = User
+#     template_name = "account/adminlogin.html"   
+#     form_class = AdminLogin
+#     def get(self, request):
+#         if request.method == "POST":
+#             form = self.form_class(request.POST)
+#             if form.is_valid():
+#                 email = form.cleaned_data.get('email')
+#                 password = form.cleaned_data.get('password')
+#                 user = User.objects.create_user(email, password)
+#                 try:
+#                     user = User.objects.get(email=email, password=password)
+#                     return render(request, 'event/home.html', {'user':user})
+#                 except:
+#                     messages.success(request, 'Error, either Email or Password is not correct')
+#             else:
+#                 form = AdminLogin()
+#             return render(request, self.template_name)
 
 #..............................................??????????????????????????????????
     
