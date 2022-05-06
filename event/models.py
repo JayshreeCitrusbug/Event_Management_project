@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone 
 
 class Member(User):
-    event_admin = models.BooleanField()
+    event_admin = models.BooleanField(default=False)
 
 
 class Artist(models.Model):

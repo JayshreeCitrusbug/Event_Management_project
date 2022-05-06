@@ -10,7 +10,7 @@ from event.models import Member, User
 class UserNewCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = Member
-        fields = ["username", "first_name", "last_name", "email"]
+        fields = ["username", "first_name", "last_name", "email", 'password']
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -20,7 +20,7 @@ class UserNewCreationForm(UserCreationForm):
             user.save()
         return user
 
-class AdminLogin(forms.Form):
+class AdminLoginForm(forms.Form):
     email = forms.CharField(max_length=150)
     password = forms.CharField(max_length=50, widget=forms.PasswordInput)
 #END Admin Register form

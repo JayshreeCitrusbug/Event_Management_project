@@ -1,7 +1,7 @@
 from django.urls import path, include
 from . import views   
 from event.views import EventListview, EventDetailView
-from .views import UserRegisterView, UserSignUpView, AdminLogin
+from .views import UserRegisterView, UserSignUpView
 
 urlpatterns = [
     path('' , views.main.as_view(), name='home'),
@@ -10,7 +10,7 @@ urlpatterns = [
     path('account/register/' , UserRegisterView.as_view(), name ='register'),
     path('account/signup/', UserSignUpView.as_view(), name='signup'),  
     #Login
-    path('account/eventadminlogin/', AdminLogin.as_view(), name='admin-login'),
+    path('account/eventadminlogin/', views.AdminLogin.as_view(), name='admin-login'),
     path('event/' , EventListview.as_view(), name='event-list'),
     path('eventdetail/<int:pk>', EventDetailView.as_view(), name='event-detail'),
     
