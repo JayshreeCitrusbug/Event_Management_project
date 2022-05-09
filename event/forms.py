@@ -6,23 +6,25 @@ from django import forms
 
 from event.models import Member, User
 
-#Admin Register/Login form
+
+# 
+# user.event_admin = True
+ # user.is_staff = True
+#Admin Register form
 class UserNewCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = Member
-        fields = ["username", "first_name", "last_name", "email", 'password']
+        fields = ["username", "first_name", "last_name", "email","password1","password2"]
+
+    def clean(self):
+        print(super(UserNewCreationForm, self).clean())
+        return  super(UserNewCreationForm, self).clean()
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.event_admin = True
         if commit:
-            user.is_staff = True
             user.save()
         return user
-
-class AdminLoginForm(forms.Form):
-    email = forms.CharField(max_length=150)
-    password = forms.CharField(max_length=50, widget=forms.PasswordInput)
 #END Admin Register form
 
 
@@ -40,3 +42,8 @@ class UserSignUpForm(UserCreationForm):
         return user   
 #END User Register Form
 
+
+
+class AdminLoginForm(forms.Form):
+    email = forms.CharField(max_length=150)
+    password = forms.CharField(max_length=50, widget=forms.PasswordInput)

@@ -10,7 +10,8 @@ from django.shortcuts import redirect, render
 from django.views.generic import View, ListView, DetailView, CreateView
 from event import forms
 from event.models import Event, Artist, EventBook, Genre, Member , User
-from event.forms import AdminLoginForm, UserSignUpForm, UserNewCreationForm, AdminLoginForm
+from event.forms import  UserNewCreationForm,  AdminLoginForm
+# UserSignUpForm,
 from django.contrib import messages
 
 #from django.views import generic
@@ -25,63 +26,7 @@ class main(View):
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, {})
-#method base view of  main      
-# def main(request):
-#     return render(request, 'event/home.html' , {})
 
-
-#Profile
-#..............................................??????????????????Have to check return statement............return none value error occured????????
-# from django.views.generic import View
-
-
-# class LoginPageView(View):
-#     template_name = 'authentication/login.html'
-#     form_class = forms.LoginForm
-    
-#     def get(self, request):
-#         form = self.form_class()
-#         message = ''
-#         return render(request, self.template_name, context={'form': form, 'message': message})
-        
-#     def post(self, request):
-#         form = self.form_class(request.POST)
-#         if form.is_valid():
-#             user = Authenticate(
-#                 username=form.cleaned_data['username'],
-#                 password=form.cleaned_data['password'],
-#             )
-#             if user is not None:
-#                 login(request, user)
-#                 return redirect('home')
-#         message = 'Login failed!'
-#         return render(request, self.template_name, context={'form': form, 'message': message})
-
-
-
-# ...................
-
-#     model = User
-#     template_name = "account/adminlogin.html"   
-#     form_class = AdminLogin
-#     def get(self, request):
-#         if request.method == "POST":
-#             form = self.form_class(request.POST)
-#             if form.is_valid():
-#                 email = form.cleaned_data.get('email')
-#                 password = form.cleaned_data.get('password')
-#                 user = User.objects.create_user(email, password)
-#                 try:
-#                     user = User.objects.get(email=email, password=password)
-#                     return render(request, 'event/home.html', {'user':user})
-#                 except:
-#                     messages.success(request, 'Error, either Email or Password is not correct')
-#             else:
-#                 form = AdminLogin()
-#             return render(request, self.template_name)
-
-#..............................................??????????????????????????????????
-    
 
 #Event list/Detail view
 class EventListview(ListView):
@@ -100,50 +45,51 @@ class UserRegisterView(CreateView):
     model = Member
     form_class = UserNewCreationForm
     template_name = 'account/register.html'
-
-    # def get(self, request):
-    #     form = self.form_class()
-    #     return render(request, self.template_name, {'form': form})
-
-    def get_context_data(self, **kwargs):
-        kwargs['user_type'] = 'event_admin'
-        return super().get_context_data(**kwargs)
-
-        
-
+    
     def post(self, request):
+        print("request",request.POST)
         form = self.form_class(request.POST)
+        errors = form.non_field_errors()
+        field_errors = [ (field.label, field.errors) for field in form]
+        print("field_errors", field_errors) 
+        
+        print('Form is', form.is_valid())
         if form.is_valid():
             form.save()
+            # msg = "form is valid data is added in db"
+            # return HttpResponse(msg)
             return redirect('admin-login')
         else:
-            return redirect('event-list')
-
+            msg = "ERROR -->>> form is not valid"
+            return HttpResponse(msg)
+        
+#END Admin Register
 
 #User Register
-class UserSignUpView(CreateView):
-    model = User
-    form_class = UserSignUpForm
-    template_name = 'account/usersignup.html'
+# class UserSignUpView(CreateView):
+#     model = User
+#     form_class = UserSignUpForm
+#     template_name = 'account/usersignup.html'
 
-    # def get_context_data(self, **kwargs):
-    #     kwargs['user_type'] = 'user'
-    #     return super().get_context_data(**kwargs)
+#     def get_context_data(self, **kwargs):
+#         kwargs['user_type'] = 'user'
+#         return super().get_context_data(**kwargs)
 
-    def post(self, request):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-        else:
-            return redirect('event-list')
+#     def post(self, request):
+#         form = self.form_class(request.POST)
+#         # print(form.cleaned_data)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('home')
+#         else:
+#             return redirect('event-list')
+
+#END User Register
 #END Register view
 
-
+#Login View
+#Admin Login View
 class AdminLogin(View):
-    # template_name = "account/adminlogin.html"
-    # def get(self, request):
-    #     return render(request, self.template_name)
     model = Member
     template_name = "account/adminlogin.html"   
     form_class = AdminLoginForm
@@ -154,15 +100,18 @@ class AdminLogin(View):
         return render(request, self.template_name, context={'form': form, 'message': message})
 
     def post(self, request):
+        form = self.form_class(request.POST)
         if request.method == "POST":
-            form = self.form_class(request.POST)
             if form.is_valid():
-                email = form.cleaned_data.get('email')
+                username = form.cleaned_data.get('username')
                 password = form.cleaned_data.get('password')
-                # user = Member.objects.create_user(email, password)
+                
                 try:
-                    user = Member.objects.get(email=email, password=password)
-                    return render(request, 'home', {user})
+                    user = Member.objects.get(username=username,password=password)
+                    if user is not None:
+                        if user.is_active:
+                            return redirect('home')
+                            # return render(request, 'home', {'user': user})
                 except Exception as e:
                     message = f'Error, either Email or Password is not correct {e}'
                     return HttpResponse(message)
