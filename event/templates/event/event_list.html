@@ -3,13 +3,35 @@
 {% block content %}
 
 
-<h3>else is running in View<br/>
+<h1>Event List</h1>
+<br />
 
-    Data is no stored</h3>
+{% for event in event_list %}
+<ul>
+    <li>
+        <a href="{% url 'event-detail' event.pk %}">
+            <h3>{{event.name}}</h3>
+        </a>
+        <table>
+            <tr>
+                <th>Type of event :</th>
+                <td>{{event.genre}}</td>
+            </tr>
 
-    {% for event in object_list %}
-        {{event.nane}}
+            <tr>
+                <th>Event Date :</th>
+                <td>{{event.eventDate}}</td>
+            </tr>
 
-    {% endfor %}
+            <tr>
+                <th>Description :</th>
+                <td>{{event.description}}</td>
+            </tr>
+
+        </table>
+    </li>
+</ul>
+{% endfor %}
+
 
 {% endblock %}

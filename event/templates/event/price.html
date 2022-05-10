@@ -1,0 +1,116 @@
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        {% block title %} Evyfy | Price {% endblock %}
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .columns {
+            float: left;
+            width: 33.3%;
+            padding: 8px;
+        }
+
+        .price {
+            list-style-type: none;
+            border: 1px solid #eee;
+            margin: 0;
+            padding: 0;
+            -webkit-transition: 0.3s;
+            transition: 0.3s;
+        }
+
+        .price:hover {
+            box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.2)
+        }
+
+        .price .header {
+            background-color: #111;
+            color: white;
+            font-size: 25px;
+        }
+
+        .price li {
+            border-bottom: 1px solid #eee;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .price .grey {
+            background-color: #eee;
+            font-size: 20px;
+        }
+
+        .button {
+            background-color: #04AA6D;
+            border: none;
+            color: white;
+            padding: 10px 25px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .columns {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    {% block content %}
+    <h1 style="text-align:center">Price ready !!!</h1>
+    <h2 style="text-align:center">Book your seat</h2>
+    <p style="text-align:center"></p>
+
+    <div class="columns">
+        <ul class="price">
+            <li class="header">Silver</li>
+            <li class="grey">$ 9.99 / seat</li>
+            <li>Normal Seat</li>
+            <li>NO Snacks</li>
+            <li>NO Welcom Drink</li>
+            <li>NO Extra Beverages</li>
+            <li class="grey"><a href="{% url 'register' %}" class="button">Book Your Seat</a></li>
+        </ul>
+    </div>
+
+    <div class="columns">
+        <ul class="price">
+            <li class="header" style="background-color:#04AA6D">Gold</li>
+            <li class="grey">$ 24.99 / Seat</li>
+            <li>Chair Seats</li>
+            <li>NO Snacks</li>
+            <li>Welcom Drink</li>
+            <li>Limited Extra Beverages</li>
+            <li class="grey"><a href="{% url 'register' %}" class="button">Book Your Seat</a></li>
+        </ul>
+    </div>
+
+    <div class="columns">
+        <ul class="price">
+            <li class="header">Platinum</li>
+            <li class="grey">$ 49.99 / Seat</li>
+            <li>Special Sofa Seats</li>
+            <li>Snacks</li>
+            <li>Welcom Drink</li>
+            <li> + Extra Beverages </li>
+            <li class="grey"><a href="{% url 'register' %}" class="button">Book Your Seat</a></li>
+        </ul>
+    </div>
+
+</body>
+
+</html>
+
+{% endblock %}

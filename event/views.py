@@ -3,13 +3,14 @@ from re import template
 from types import MemberDescriptorType
 from urllib import request
 from django import forms
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 
 # Create your views here.
 from django.views.generic import View, ListView, DetailView, CreateView
 from event import forms
 from event.models import Event, Artist, EventBook, Genre, Member , User
+from django.contrib.auth.models import auth
 from event.forms import  UserNewCreationForm,  AdminLoginForm
 # UserSignUpForm,
 from django.contrib import messages
@@ -20,12 +21,41 @@ from django.contrib import messages
 
 
 
-#Main page
-class main(View):
-    template_name = "event/home.html"
+#Home page
+class Home(View):
+    template_name = "home.html"
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, {})
+#About Page
+class About(View):
+    template_name = "about.html"
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, {})
+#Price
+class Price(View):
+    template_name = "event/price.html"
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, {})
+
+#User Profile
+class Userprofile(ListView):
+    model = Event
+    template_name = "account/userprofile.html"
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, {})
+
+
+#Contact Page
+class Contact(View):
+    template_name = "contact.html"
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, {})
+
 
 
 #Event list/Detail view
@@ -89,33 +119,38 @@ class UserRegisterView(CreateView):
 
 #Login View
 #Admin Login View
-class AdminLogin(View):
+class Login(View):
     model = Member
     template_name = "account/adminlogin.html"   
     form_class = AdminLoginForm
 
     def get(self, request):
         form = self.form_class()
-        message = ''
-        return render(request, self.template_name, context={'form': form, 'message': message})
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request):
         form = self.form_class(request.POST)
-        if request.method == "POST":
-            if form.is_valid():
-                username = form.cleaned_data.get('username')
-                password = form.cleaned_data.get('password')
+        if form.is_valid():
+            un = form.cleaned_data.get('username')
+            psw = form.cleaned_data.get('password')
+            user =  auth.authenticate(username=un,password=psw)
+            try:
+                if user is not None:
+                    if user.is_active and user.is_staff == True:
+                        return render(request, 'account/adminprofile.html') 
+                    else:
+                        auth.login(request,user)
+                        return render(request,'account/userprofile.html')
+                else:
+                    msg = 'If New User than please register first..!!'
+                    return render(request, self.template_name, context={'form':form , 'message':msg})
+
+            except Exception as e:
+                message = f'Error, either Email or Password is not correct  {e}'
+                return HttpResponse(message)
+
                 
-                try:
-                    user = Member.objects.get(username=username,password=password)
-                    if user is not None:
-                        if user.is_active:
-                            return redirect('home')
-                            # return render(request, 'home', {'user': user})
-                except Exception as e:
-                    message = f'Error, either Email or Password is not correct {e}'
-                    return HttpResponse(message)
-            else:
-                form = AdminLoginForm()
-                msg = 'Login is not valid'
-            return HttpResponse(msg)
+        else:
+            form = self.form_class()
+            return render(request, self.template_name, {'form':form})
+

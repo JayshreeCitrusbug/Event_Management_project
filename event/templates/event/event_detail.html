@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %} Evyfy | Event Detial {% endblock %}
+{% block content %}
+<h3>{{event.name}}</h3>
+<table>
+    <tr>
+        <th>Type of event :</th>
+        <td>{{event.genre}}</td>
+    </tr>
+
+    <tr>
+        <th>Event Date :</th>
+        <td>{{event.eventDate}}</td>
+    </tr>
+    <tr>
+        <th>Last Date of Booking :</th>
+        <td>{{event.lastDateBook}}</td>
+    </tr>
+
+    <tr>
+        <th>Seat Available :</th>
+        <td>{{event.seatAvailable}}</td>
+    </tr>
+
+    <tr>
+        <button class="btn btn-outline-info" type="submit"><a href="{% url 'price' %}"> Book Your Seat </a></button>
+    </tr>
+
+</table>
+<pre>
+
+</pre>
+<a href="{% url 'event-list' %}" class="btn btn-secondary"> Back </a>
+
+
+{% endblock %}

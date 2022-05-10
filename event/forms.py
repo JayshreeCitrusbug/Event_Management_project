@@ -22,7 +22,9 @@ class UserNewCreationForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
+        user.event_admin = True
         if commit:
+            user.is_staff = True
             user.save()
         return user
 #END Admin Register form
@@ -33,7 +35,7 @@ class UserSignUpForm(UserCreationForm):
     
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ["username", "first_name", "last_name", "email"]
+        fields = ["username", "first_name", "last_name", "email", "password1","password2"]
 
     def save(self):
         user = super().save(commit=False)
@@ -45,5 +47,5 @@ class UserSignUpForm(UserCreationForm):
 
 
 class AdminLoginForm(forms.Form):
-    email = forms.CharField(max_length=150)
+    username = forms.CharField(max_length=150)
     password = forms.CharField(max_length=50, widget=forms.PasswordInput)

@@ -57,7 +57,7 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR,'templates')],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -70,6 +70,7 @@ TEMPLATES = [
     },
 ]
 
+# print('DIRS', os.path.join(BASE_DIR,'templates'))
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
 
@@ -124,9 +125,14 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static'),
-# ]
+STATIC_FILES = os.path.join(os.path.dirname(BASE_DIR), "event", "templates")
+
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "event", "static"),)
+
+# print('STATICFILES_DIRS' , STATICFILES_DIRS)
+# print('STATIC_FILES', STATIC_FILES)
+
+
 
 
 # Default primary key field type
