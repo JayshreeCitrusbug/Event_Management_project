@@ -6,32 +6,42 @@
 <h1>Event List</h1>
 <br />
 
-{% for event in event_list %}
-<ul>
-    <li>
-        <a href="{% url 'event-detail' event.pk %}">
-            <h3>{{event.name}}</h3>
-        </a>
-        <table>
-            <tr>
-                <th>Type of event :</th>
-                <td>{{event.genre}}</td>
-            </tr>
+<table class="table table-striped">
+    <thead>
 
-            <tr>
-                <th>Event Date :</th>
-                <td>{{event.eventDate}}</td>
-            </tr>
-
-            <tr>
-                <th>Description :</th>
-                <td>{{event.description}}</td>
-            </tr>
-
-        </table>
-    </li>
-</ul>
-{% endfor %}
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Genre</th>
+            <th scope="col" style="margin-left: 5px;">Event Date</th>
+            <th scope="col">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for event in event_list %}
+        <tr>
+            
+        </tr>
+        <tr>
+            <th>{% if user.is_authenticated %}
+                <a href="{% url 'event-detail' event.pk %}">
+                    <h4>{{event.name}}</h4>
+                </a>
+                {% elif not is_authenticated %}
+                <a href="{% url 'login' %}">
+                    <h4>{{event.name}}</h4>
+                </a>
+                {% endif %}</th>
+            <td scope="row">{{event.genre}}</td>
+            <td>{{event.eventDate}}</td>
+            <td>{{event.description}}</td>
+            <td>{% if user.is_staff %}
+                <a href="{% url 'update-event' event.pk %}" class="button">Update</a>
+                {% endif %}
+            </td>
+        </tr>
+        {%endfor%}
+    </tbody>
+</table>
 
 
 {% endblock %}

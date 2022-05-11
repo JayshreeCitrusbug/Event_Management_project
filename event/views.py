@@ -2,7 +2,7 @@ from imaplib import _Authenticator
 from re import template
 from types import MemberDescriptorType
 from urllib import request
-from django import forms
+from django import forms, views
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 
@@ -11,7 +11,7 @@ from django.views.generic import View, ListView, DetailView, CreateView
 from event import forms
 from event.models import Event, Artist, EventBook, Genre, Member , User
 from django.contrib.auth.models import auth
-from event.forms import  UserNewCreationForm,  AdminLoginForm
+from event.forms import  UserNewCreationForm,  AdminLoginForm, AddEventForm, UpdateEventForm
 # UserSignUpForm,
 from django.contrib import messages
 
@@ -48,6 +48,12 @@ class Userprofile(ListView):
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, {})
 
+class AdminProfileView(ListView):
+    model = Event
+    template_name = "account/adminprofile.html"
+
+    
+
 
 #Contact Page
 class Contact(View):
@@ -66,6 +72,45 @@ class EventListview(ListView):
 class EventDetailView(DetailView):
     model = Event
     template_name = 'event/event_detail.html'
+
+class EventBooked(View):
+    model = EventBook
+    template_name = 'event/eventbook.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, {})
+
+class AddEventView(CreateView):
+    model = Event
+    form_class = AddEventForm
+    template_name = 'event/add_event.html'
+
+    def post(self, request):
+        form =self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('event-list')
+        else:
+            msg = "Event can not generated please Try Again "
+            return HttpResponse(msg)
+
+class UpdateEvent(View):
+    model = Event
+    form_class = UpdateEventForm
+    template_name = 'event/update_event.html'
+    
+
+    def get(self, request, *args, **kwargs):
+        
+        return render(request, self.template_name, {'form':self.form_class})
+
+    def update_event(self, request, event_id):
+        event = Event.objects.get(pk=event_id)
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            return redirect('event-list')
+        return render(request, 'update-event', {'form':form})
+
 
 # END Event list Detail view
 
@@ -88,7 +133,7 @@ class UserRegisterView(CreateView):
             form.save()
             # msg = "form is valid data is added in db"
             # return HttpResponse(msg)
-            return redirect('admin-login')
+            return redirect('login')
         else:
             msg = "ERROR -->>> form is not valid"
             return HttpResponse(msg)
@@ -153,4 +198,11 @@ class Login(View):
         else:
             form = self.form_class()
             return render(request, self.template_name, {'form':form})
+
+
+
+class Logout(View):
+    def get(self, request):
+        auth.logout(request)
+        return redirect('home')
 

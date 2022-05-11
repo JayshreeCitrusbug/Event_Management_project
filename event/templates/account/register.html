@@ -68,6 +68,8 @@
 
 </head>
 <body>
+	{% include 'base.html' %}
+	{% block content %}
 	<div class="container h-100">
 		<div class="d-flex justify-content-center h-100">
 			<div class="user_card">
@@ -124,7 +126,7 @@
 		
 				<div class="mt-4">
 					<div class="d-flex justify-content-center links">
-						Already have an account? <a href="{% url 'admin-login' %}" class="ml-2">Login</a>
+						Already have an account? <a href="{% url 'login' %}" class="ml-2">Login</a>
 					</div>
 				</div>
 			</div>
@@ -144,6 +146,7 @@
 		form_fields[5].placeholder='Enter password...';
 		form_fields[6].placeholder='Re-enter Password...';
 	</script>
+	{% endblock %}
 </body>
 </html>
 

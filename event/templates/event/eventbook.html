@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        {% block title %} Evyfy | Price {% endblock %}
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    {% include 'base.html' %}
+
+    {% block content %}
+    <h2 style="text-align:center">Event book page ready !!!</h2>
+    <h3 style="text-align:center">Event is booked successfully....!!!!</h3>
+    <p style="text-align:center">Woohoo..Congratulations!!!<br/>
+        {{request.user.first_name}} {{request.user.last_name}} 
+        your ticket is booked</p>
+
+    {% endblock %}
+</body>
+
+</html>
