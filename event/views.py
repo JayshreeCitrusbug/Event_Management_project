@@ -5,14 +5,17 @@ from urllib import request
 from django import forms, views
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
 
 # Create your views here.
 from django.views.generic import View, ListView, DetailView, CreateView
+from django.views.generic.edit import UpdateView
 from event import forms
 from event.models import Event, Artist, EventBook, Genre, Member , User
 from django.contrib.auth.models import auth
-from event.forms import  UserNewCreationForm,  AdminLoginForm, AddEventForm, UpdateEventForm
-# UserSignUpForm,
+from event.forms import  UserNewCreationForm, UserSignUpForm,  AdminLoginForm, AddEventForm, UpdateEventForm
+# ,  AdminProfileForm
+
 from django.contrib import messages
 
 #from django.views import generic
@@ -26,6 +29,9 @@ class Home(View):
     template_name = "home.html"
 
     def get(self, request, *args, **kwargs):
+        # un1=request.POST['username']
+        # user1 = User.objects.get(username=un1)
+        # print(user1)
         return render(request, self.template_name, {})
 #About Page
 class About(View):
@@ -40,21 +46,6 @@ class Price(View):
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, {})
 
-#User Profile
-class Userprofile(ListView):
-    model = Event
-    template_name = "account/userprofile.html"
-
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, {})
-
-class AdminProfileView(ListView):
-    model = Event
-    template_name = "account/adminprofile.html"
-
-    
-
-
 #Contact Page
 class Contact(View):
     template_name = "contact.html"
@@ -64,11 +55,37 @@ class Contact(View):
 
 
 
+
+
+
+#User Profile
+class Userprofile(ListView):
+    model = Event
+    template_name = "account/userprofile.html"
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, {})
+
+
+#Admin Profile View
+class AdminProfileView(ListView):
+    model = Event
+    template_name = "account/adminprofile.html"
+    un = Member.objects.select_related('user_ptr').all()
+    print(un)
+    def get(self, request):
+        eventData = Event.objects.all()
+        return render(request,self.template_name,{'showevent':eventData})
+
+
+        
+
+
 #Event list/Detail view
 class EventListview(ListView):
     model = Event
     template_name = 'event/event_list.html'
-
+   
 class EventDetailView(DetailView):
     model = Event
     template_name = 'event/event_detail.html'
@@ -94,25 +111,67 @@ class AddEventView(CreateView):
             msg = "Event can not generated please Try Again "
             return HttpResponse(msg)
 
-class UpdateEvent(View):
+# ............................................................
+class UpdateEventView(UpdateView):
     model = Event
     form_class = UpdateEventForm
     template_name = 'event/update_event.html'
     
 
     def get(self, request, *args, **kwargs):
-        
         return render(request, self.template_name, {'form':self.form_class})
 
-    def update_event(self, request, event_id):
-        event = Event.objects.get(pk=event_id)
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            return redirect('event-list')
-        return render(request, 'update-event', {'form':form})
+    def get_success_url(self):
+         return reverse_lazy('admin-profile')
 
+    # def post(self, request, event_id):
+    #     # event = Event.objects.get(event_id)
+    #     form = self.form_class(request.POST)
+    #     if form.is_valid():
+    #         form.save()
+    #         return redirect('event-list')
+    #     return render(request, 'update-event', {'form':form})
+
+# ............................................................
+# class UpdateEventView(UpdateView):
+#     model = Event
+#     form_class = UpdateEventForm
+#     template_name = 'event/update_event.html'
+    
+
+#     def get(self, request, *args, **kwargs):
+#         form = self.form_class
+#         data = Event.objects.get(self.kwargs['pk'])
+#         return render(request, self.template_name, {'form':form, 'data':data})
+    
+#     context_object_name = 'data'
+    
+#     def get_success_url(self):
+#         return reverse_lazy('event-list')
+
+
+
+
+# class UpdateEvent(View):
+#     model = Event
+#     form_class = UpdateEventForm
+#     template_name = 'event/update_event.html'
+    
+
+#     def get(self, request, *args, **kwargs):
+#         return render(request, self.template_name, {'form':self.form_class})
+
+#     def post(self, request, event_id):
+#         event = Event.objects.get(pk=event_id)
+#         form = self.form_class(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('event-list')
+#         return render(request, 'update-event', {'form':form})
 
 # END Event list Detail view
+
+
 
 #Register view
 #Admin Register
@@ -141,23 +200,23 @@ class UserRegisterView(CreateView):
 #END Admin Register
 
 #User Register
-# class UserSignUpView(CreateView):
-#     model = User
-#     form_class = UserSignUpForm
-#     template_name = 'account/usersignup.html'
+class UserSignUpView(CreateView):
+    model = User
+    form_class = UserSignUpForm
+    template_name = 'account/usersignup.html'
 
-#     def get_context_data(self, **kwargs):
-#         kwargs['user_type'] = 'user'
-#         return super().get_context_data(**kwargs)
+    def get_context_data(self, **kwargs):
+        kwargs['user_type'] = 'user'
+        return super().get_context_data(**kwargs)
 
-#     def post(self, request):
-#         form = self.form_class(request.POST)
-#         # print(form.cleaned_data)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('home')
-#         else:
-#             return redirect('event-list')
+    def post(self, request):
+        form = self.form_class(request.POST)
+        # print(form.cleaned_data)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+        else:
+            return redirect('login')
 
 #END User Register
 #END Register view
@@ -182,7 +241,8 @@ class Login(View):
             try:
                 if user is not None:
                     if user.is_active and user.is_staff == True:
-                        return render(request, 'account/adminprofile.html') 
+                        auth.login(request,user)
+                        return redirect('admin-profile')
                     else:
                         auth.login(request,user)
                         return render(request,'account/userprofile.html')

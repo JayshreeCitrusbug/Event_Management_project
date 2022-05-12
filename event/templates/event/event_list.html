@@ -34,10 +34,6 @@
             <td scope="row">{{event.genre}}</td>
             <td>{{event.eventDate}}</td>
             <td>{{event.description}}</td>
-            <td>{% if user.is_staff %}
-                <a href="{% url 'update-event' event.pk %}" class="button">Update</a>
-                {% endif %}
-            </td>
         </tr>
         {%endfor%}
     </tbody>

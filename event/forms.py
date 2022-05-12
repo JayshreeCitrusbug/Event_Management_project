@@ -4,13 +4,9 @@ import email
 from email.policy import default
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from .models import Event
-from event.models import *
+from event.models import Member, User, Event
 
 
-# 
-# user.event_admin = True
- # user.is_staff = True
 #Admin Register form
 class UserNewCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
@@ -52,6 +48,19 @@ class AdminLoginForm(forms.Form):
     password = forms.CharField(max_length=50, widget=forms.PasswordInput)
 #END Login
 
+
+#Admin Profile view
+# class AdminProfileForm(forms.ModelForm):
+#     class Meta:
+#         model = Event
+#         fields = '__all__'
+#         def clean(self):
+#             print(super(AdminProfileForm, self).clean())
+#             return  super(AdminProfileForm, self).clean()
+
+        
+
+
 #Add Event
 class AddEventForm(forms.ModelForm):
     class Meta:
@@ -85,4 +94,18 @@ class AddEventForm(forms.ModelForm):
 class UpdateEventForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = '__all__'
+        # exclude =['active','eventDate','lastDateBook','price','seatAvailable']
+        fields = ['name', 'genre', 'eventDate', 'lastDateBook', 
+        'seatAvailable', 'price', 'description', 'artist', 'active']
+
+        widgets = {
+            'name':forms.TextInput(attrs={'class':'form-control','placeholder':'Name'}),
+            'genre':forms.Select(attrs={'class':'form-select','placeholder':'Type of Event'}),
+            'eventDate':forms.DateTimeInput(attrs={'class':'form-control','placeholder':'Event Date in YYYY:MM:DD HH:MM:SS'}),
+            'lastDateBook':forms.DateTimeInput(attrs={'class':'form-control','placeholder':'Last Date of Booking in YYYY:MM:DD HH:MM:SS'}),
+            'seatAvailable':forms.NumberInput(attrs={'class':'form-control','placeholder':'No. of Seats Available'}),
+            'price':forms.NumberInput(attrs={'class':'form-control','placeholder':'Price per persion'}),
+            'description':forms.Textarea(attrs={'class':'form-control','placeholder':'Description'}),
+            'artist':forms.SelectMultiple(attrs={'class':'form-control','placeholder':'Select Artist'}),    
+            'active':forms.NullBooleanSelect(attrs={'class':'form-control','placeholder':'Active','default':'yes'}),
+        }
