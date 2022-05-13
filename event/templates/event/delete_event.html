@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %} Evyfy | Delete Event {% endblock %}
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+     
+    <p>Are you sure...you want to delete "{{ name }}"?</p>
+     
+     
+    <button class="btn btn-danger" type="submit"> Yes </button>
+    <a href="{% url 'admin-profile' %}" class="btn btn-secondary"> NO </a>
+        
+    </form>
+
+
+    
+{% endblock %}

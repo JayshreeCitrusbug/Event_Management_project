@@ -9,11 +9,11 @@ from django.urls import reverse_lazy
 
 # Create your views here.
 from django.views.generic import View, ListView, DetailView, CreateView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, DeleteView
 from event import forms
 from event.models import Event, Artist, EventBook, Genre, Member , User
 from django.contrib.auth.models import auth
-from event.forms import  UserNewCreationForm, UserSignUpForm,  AdminLoginForm, AddEventForm, UpdateEventForm
+from event.forms import  UserNewCreationForm, UserSignUpForm,  AdminLoginForm, AddEventForm, UpdateEventForm, AddArtistForm
 # ,  AdminProfileForm
 
 from django.contrib import messages
@@ -72,9 +72,14 @@ class AdminProfileView(ListView):
     model = Event
     template_name = "account/adminprofile.html"
     un = Member.objects.select_related('user_ptr').all()
-    print(un)
+    print('member data' ,un)
     def get(self, request):
         eventData = Event.objects.all()
+        # artistname = Artist.objects.all()  ,'showartist':artistname print('artist data', artistname)
+        print('evenrdata',eventData)
+        print(type(eventData))
+        # lst = list(eventData.values())
+        # print(type(lst))
         return render(request,self.template_name,{'showevent':eventData})
 
 
@@ -111,7 +116,6 @@ class AddEventView(CreateView):
             msg = "Event can not generated please Try Again "
             return HttpResponse(msg)
 
-# ............................................................
 class UpdateEventView(UpdateView):
     model = Event
     form_class = UpdateEventForm
@@ -124,14 +128,16 @@ class UpdateEventView(UpdateView):
     def get_success_url(self):
          return reverse_lazy('admin-profile')
 
-    # def post(self, request, event_id):
-    #     # event = Event.objects.get(event_id)
-    #     form = self.form_class(request.POST)
-    #     if form.is_valid():
-    #         form.save()
-    #         return redirect('event-list')
-    #     return render(request, 'update-event', {'form':form})
 
+class DeleteEventView(DeleteView):
+    model = Event
+    template_name = 'event/delete_event.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, {'name':Event.name})
+
+    def get_success_url(self):
+         return reverse_lazy('admin-profile')
 # ............................................................
 # class UpdateEventView(UpdateView):
 #     model = Event
@@ -149,9 +155,6 @@ class UpdateEventView(UpdateView):
 #     def get_success_url(self):
 #         return reverse_lazy('event-list')
 
-
-
-
 # class UpdateEvent(View):
 #     model = Event
 #     form_class = UpdateEventForm
@@ -168,8 +171,63 @@ class UpdateEventView(UpdateView):
 #             form.save()
 #             return redirect('event-list')
 #         return render(request, 'update-event', {'form':form})
+# ............................................................
 
 # END Event list Detail view
+
+
+
+#Artist list detail View
+
+class ArtistListview(ListView):
+    model = Artist
+    template_name = 'artist/artist_list.html'
+
+class ArtistDetailView(DetailView):
+    model = Artist
+    template_name = 'artist/artist_detail.html'
+
+class AddArtistView(CreateView):
+    model = Artist
+    form_class = AddArtistForm
+    template_name = 'artist/add_artist.html'
+
+    def post(self, request):
+        form =self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('artist-list')
+        else:
+            msg = "Artist can not generated please Try Again later. "
+            return HttpResponse(msg)
+
+
+
+# class UpdateArtistView(UpdateView):
+#     model = Event
+#     form_class = UpdateArtistForm
+#     template_name = 'event/update_event.html'
+    
+
+#     def get(self, request, *args, **kwargs):
+#         return render(request, self.template_name, {'form':self.form_class})
+
+#     def get_success_url(self):
+#          return reverse_lazy('admin-profile')
+
+
+
+
+
+
+
+
+
+
+
+
+
+#END Artist list detail View
 
 
 

@@ -15,7 +15,7 @@ class Artist(models.Model):
     description = models.TextField()
 
     def __str__(self):
-        return self.name + ' | ' + self.description
+        return self.name 
 
     # def get_absolute_url(self):
     #     return reverse('event-list')

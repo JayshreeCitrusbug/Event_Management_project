@@ -4,7 +4,7 @@ import email
 from email.policy import default
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from event.models import Member, User, Event
+from event.models import Member, User, Event, Artist
 
 
 #Admin Register form
@@ -49,15 +49,6 @@ class AdminLoginForm(forms.Form):
 #END Login
 
 
-#Admin Profile view
-# class AdminProfileForm(forms.ModelForm):
-#     class Meta:
-#         model = Event
-#         fields = '__all__'
-#         def clean(self):
-#             print(super(AdminProfileForm, self).clean())
-#             return  super(AdminProfileForm, self).clean()
-
         
 
 
@@ -65,6 +56,7 @@ class AdminLoginForm(forms.Form):
 class AddEventForm(forms.ModelForm):
     class Meta:
         model = Event
+        # exclude =['active']
         fields = ['name', 'genre', 'eventDate', 'lastDateBook', 
         'seatAvailable', 'price', 'description', 'artist', 'active']
         label = {
@@ -94,9 +86,9 @@ class AddEventForm(forms.ModelForm):
 class UpdateEventForm(forms.ModelForm):
     class Meta:
         model = Event
-        # exclude =['active','eventDate','lastDateBook','price','seatAvailable']
-        fields = ['name', 'genre', 'eventDate', 'lastDateBook', 
-        'seatAvailable', 'price', 'description', 'artist', 'active']
+        exclude =['active','eventDate','lastDateBook','price','seatAvailable']
+        # fields = ['name', 'genre', 'eventDate', 'lastDateBook', 
+        # 'seatAvailable', 'price', 'description', 'artist', 'active']
 
         widgets = {
             'name':forms.TextInput(attrs={'class':'form-control','placeholder':'Name'}),
@@ -108,4 +100,18 @@ class UpdateEventForm(forms.ModelForm):
             'description':forms.Textarea(attrs={'class':'form-control','placeholder':'Description'}),
             'artist':forms.SelectMultiple(attrs={'class':'form-control','placeholder':'Select Artist'}),    
             'active':forms.NullBooleanSelect(attrs={'class':'form-control','placeholder':'Active','default':'yes'}),
+        }
+
+#Artist 
+
+class AddArtistForm(forms.ModelForm):
+    class Meta:
+        model = Artist
+        fields = '__all__'
+       
+        widgets = {
+            'name':forms.TextInput(attrs={'class':'form-control','placeholder':'Artist Name'}),
+            'age':forms.NumberInput(attrs={'class':'form-control','placeholder':'Artist Age'}),
+            'description':forms.Textarea(attrs={'class':'form-control','placeholder':'Description'}),
+            
         }

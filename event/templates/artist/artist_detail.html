@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %} Evyfy | Artist Detial {% endblock %}
+{% block content %}
+
+
+<h1>welcome to the artist page</h1>
+<table>
+    <tr>
+        <th>Artist  </th>
+        <td>{{artist.name}}</td>
+    </tr>
+    <tr>
+        <th>Age  </th>
+        <td>{{artist.age}}</td>
+    </tr>
+
+    <tr>
+        <th>Description  </th>
+        <td>{{artist.description}}</td>
+    </tr>
+
+
+    <tr>{% for artist in event.artist.all %}
+        
+        <button class="btn btn-outline-info" type="submit"><a href="{% url 'event-list' %}"> Know about events </a></button>
+        
+        {%endfor%}
+    </tr>
+
+</table>
+<pre>
+
+</pre>
+<a href="{% url 'artist-list' %}" class="btn btn-secondary"> Back </a>
+
+{% endblock %}

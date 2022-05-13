@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %} Evyfy | Artist list {% endblock %}
+{% block content %}
+
+
+<h1>Artist List</h1>
+<br />
+
+<table class="table table-striped">
+    <thead>
+
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Age</th>
+            <th scope="col">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for artist in artist_list %}
+        <tr>
+            
+        </tr>
+        <tr>
+            <th>{% if user.is_authenticated %}
+                <a href="{% url 'artist-detail' artist.pk %}">
+                    <h4>{{artist.name}}</h4>
+                </a>
+                {% elif not is_authenticated %}
+                <a href="{% url 'login' %}">
+                    <h4>{{artist.name}}</h4>
+                </a>
+                {% endif %}</th>
+            <td scope="row">{{artist.age}}</td>
+            <td>{{artist.description}}</td>
+        </tr>
+        {%endfor%} 
+    </tbody>
+</table>
+
+
+{% endblock %}

@@ -35,7 +35,7 @@
             <a class="nav-link" href="{% url 'event-list' %}">EVENTS</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">ARTISTS</a>
+            <a class="nav-link" href="{% url 'artist-list' %}">ARTISTS</a>
           </li>
           <!-- ........ -->
           <li class="nav-item dropdown">
@@ -78,6 +78,9 @@
         </ul>
         <form class="d-flex">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" href="#">User - {{request.user.first_name}} {{request.user.last_name}}</a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'contact' %}">CONTACT US</a>
             </li>
