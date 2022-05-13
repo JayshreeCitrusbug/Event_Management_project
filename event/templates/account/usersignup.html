@@ -329,3 +329,19 @@ input {
 
 </body>
 </html>
+{% extends 'base.html' %}
+{% block title %} New user | Registration {% endblock %}
+{% block content %}
+
+<h2>User Sign UP</h2>
+
+<form method="POST" >
+    {% csrf_token %}
+
+    {{form.as_p}}
+
+    <button type="submit" class="btn btn-success">Register Account</button>
+
+</form>
+
+{% endblock %} 

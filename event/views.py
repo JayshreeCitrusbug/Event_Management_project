@@ -133,9 +133,6 @@ class DeleteEventView(DeleteView):
     model = Event
     template_name = 'event/delete_event.html'
 
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, {'name':Event.name})
-
     def get_success_url(self):
          return reverse_lazy('admin-profile')
 # ............................................................
