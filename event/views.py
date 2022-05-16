@@ -13,7 +13,7 @@ from django.views.generic.edit import UpdateView, DeleteView
 from event import forms
 from event.models import Event, Artist, EventBook, Genre, Member , User
 from django.contrib.auth.models import auth
-from event.forms import  UserNewCreationForm, UserSignUpForm,  AdminLoginForm, AddEventForm, UpdateEventForm, AddArtistForm
+from event.forms import  UserNewCreationForm, UserSignUpForm,  AdminLoginForm, AddEventForm, UpdateEventForm, AddArtistForm, EventBookForm
 # ,  AdminProfileForm
 
 from django.contrib import messages
@@ -41,9 +41,14 @@ class About(View):
         return render(request, self.template_name, {})
 #Price
 class Price(View):
+    model = Event
     template_name = "event/price.html"
-
+    # lst = []
+    # for e in Event.objects.get('price'):
+    #     lst.append(e)
+    #     print("rupee",lst)
     def get(self, request, *args, **kwargs):
+        
         return render(request, self.template_name, {})
 
 #Contact Page
@@ -95,12 +100,25 @@ class EventDetailView(DetailView):
     model = Event
     template_name = 'event/event_detail.html'
 
-class EventBooked(View):
+class EventBookView(View):
     model = EventBook
     template_name = 'event/eventbook.html'
+    form_class = EventBookForm
+    
+    def get(self, request):
+        data = EventBook.objects.all()
+        print("booking data",data)
+        return render(request, self.template_name, {'form':self.form_class,'booking_data':data})
 
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, {})
+    def post(self,request):
+        form =self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('event/success.html')
+        else:
+            msg = "Can not Book seats Please try again "
+            return HttpResponse(msg)
+
 
 class AddEventView(CreateView):
     model = Event
@@ -110,6 +128,7 @@ class AddEventView(CreateView):
     def post(self, request):
         form =self.form_class(request.POST)
         if form.is_valid():
+            Event.active = True
             form.save()
             return redirect('event-list')
         else:
@@ -269,9 +288,10 @@ class UserSignUpView(CreateView):
         # print(form.cleaned_data)
         if form.is_valid():
             form.save()
-            return redirect('home')
-        else:
             return redirect('login')
+        else:
+            msg = "ERROR -->>> form is not valid"
+            return HttpResponse(msg)
 
 #END User Register
 #END Register view

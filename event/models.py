@@ -54,9 +54,9 @@ class Genre(models.Model):
 
 class EventBook(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    seats = models.IntegerField()
+    seats = models.PositiveIntegerField()
     BookedDate = models.DateTimeField(default=timezone.now)
     event_id = models.ForeignKey('Event', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.user
+        return str(self.user)

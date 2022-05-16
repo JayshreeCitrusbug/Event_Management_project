@@ -27,10 +27,10 @@ urlpatterns = [
     path('event/update/<int:pk>/', views.UpdateEventView.as_view(), name='update-event'),
         #Delete event
     path('event/delete/<int:pk>/', DeleteEventView.as_view(), name='delete-event'),
-    path('event/booked/', views.EventBooked.as_view(), name='event-booked'),
+    path('event/booked/', views.EventBookView.as_view(), name='event-booked'),
     ##Artist
     path('artist/list/' , ArtistListview.as_view(), name='artist-list'),
-    path('artist/detail/<int:pk>', ArtistDetailView.as_view(), name='artist-detail'),
+    path('artist/detail/<int:pk>/', ArtistDetailView.as_view(), name='artist-detail'),
         #Add Artist
     path('artist/add/', AddArtistView.as_view(), name='add-artist'),
 ]

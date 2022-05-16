@@ -76,14 +76,14 @@
     <div class="columns">
         <ul class="price">
             <li class="header">Silver</li>
-            <li class="grey">$ 9.99 / seat</li>
+            <li class="grey"> {{event.price}}/ seat</li>
             <li>Normal Seat</li>
             <li>NO Snacks</li>
             <li>NO Welcom Drink</li>
             <li>NO Extra Beverages</li>
 
             {% if user.is_authenticated %}
-            <li class="grey"><a href="{% url 'event-booked' %}" class="button">Book Your Seat</a></li>
+            <li class="grey"><a href="{% url 'event-booked'  %}" class="button">Book Your Seat</a></li>
             {% elif not is_authenticated %}
             <li class="grey"><a href="{% url 'login' %}" class="button">Book Your Seat</a></li>
             {% endif %}
@@ -91,7 +91,7 @@
         </ul>
     </div>
 
-    <div class="columns">
+    <!-- <div class="columns">
         <ul class="price">
             <li class="header" style="background-color:#04AA6D">Gold</li>
             <li class="grey">$ 24.99 / Seat</li>
@@ -125,7 +125,7 @@
             {% endif %}
 
         </ul>
-    </div>
+    </div> -->
 
 </body>
 

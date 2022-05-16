@@ -4,7 +4,7 @@ import email
 from email.policy import default
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from event.models import Member, User, Event, Artist
+from event.models import EventBook, Member, User, Event, Artist
 
 
 #Admin Register form
@@ -56,9 +56,9 @@ class AdminLoginForm(forms.Form):
 class AddEventForm(forms.ModelForm):
     class Meta:
         model = Event
-        # exclude =['active']
-        fields = ['name', 'genre', 'eventDate', 'lastDateBook', 
-        'seatAvailable', 'price', 'description', 'artist', 'active']
+        exclude =['active']
+        # fields = ['name', 'genre', 'eventDate', 'lastDateBook', 
+        # 'seatAvailable', 'price', 'description', 'artist', 'active']
         label = {
             'name':'',
             'genre':'',
@@ -115,3 +115,18 @@ class AddArtistForm(forms.ModelForm):
             'description':forms.Textarea(attrs={'class':'form-control','placeholder':'Description'}),
             
         }
+
+class EventBookForm(forms.ModelForm):
+    class Meta:
+        model = EventBook
+        # fields = '__all__'
+        fields = ['seats','BookedDate','event_id']
+        # label = {
+        #     'seats':'',
+        #     'event_id':'',
+        # }
+        # widgets = {
+        #     'seat':forms.NumberInput(attrs={'class':'form-control','placeholder':'Select Seats'}),
+        #     'event_id':forms.Select(attrs={'class':'form-select','placeholder':'Select Event'}),
+            
+        # }

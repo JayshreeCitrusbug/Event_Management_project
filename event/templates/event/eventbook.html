@@ -12,11 +12,49 @@
     {% include 'base.html' %}
 
     {% block content %}
-    <h2 style="text-align:center">Event book page ready !!!</h2>
-    <h3 style="text-align:center">Event is booked successfully....!!!!</h3>
-    <p style="text-align:center">Woohoo..Congratulations!!!<br/>
-        {{request.user.first_name}} {{request.user.last_name}} 
-        your ticket is booked</p>
+    
+    <form method="POST">
+        {% csrf_token %}
+
+        <h2 style="text-align:center">Event book page ready !!!</h2>
+        <h3 style="text-align:center">Are you sure you want to proceed further ....!!!!</h3>
+        <p style="text-align:center">your ticket will book as - {{request.user.first_name}} {{request.user.last_name}}
+            <br />
+            <!-- {% for d in booking_data %}
+            Name = "{{d.user}}"<br/>
+            Book date = {{d.BookedDate}} 
+            {% endfor %} -->
+            <br/>
+            <br/>
+            <!-- {% for event in event_list %}
+            {% if user.is_authenticated %}
+                <a href="{% url 'event-booked' event.pk %}">
+                    <h4>{{eventbook.name}}</h4>
+                </a>
+                {% elif not is_authenticated %}
+                <a href="{% url 'login' %}">
+                    <h4>{{event.name}}</h4>
+                </a>
+                {% endif %}</th>
+                {%endfor%} -->
+
+            {% if user.is_authenticated %}
+            {{form.as_p}}
+            {% endif %}
+            <!-- {{form.seats}}
+            {{form.BookedDate}}
+            {{form.event_id}}
+         -->
+    </p>
+        <br />
+        <br />
+        <input type="reset" value="Cancel" class="btn btn-secondary">
+        <input type="submit" value=" Book " class="btn btn-success">
+        <br />
+    </form>
+    <br />
+
+
 
     {% endblock %}
 </body>
