@@ -11,7 +11,7 @@ class Member(User):
 
 class Artist(models.Model):
     name = models.CharField(max_length=50, blank=False)
-    age = models.IntegerField()
+    age = models.PositiveIntegerField()
     description = models.TextField()
 
     def __str__(self):
@@ -27,8 +27,8 @@ class Event(models.Model):
     genre =  models.ForeignKey('Genre', on_delete=models.CASCADE)
     eventDate =  models.DateTimeField()
     lastDateBook = models.DateTimeField()
-    seatAvailable = models.IntegerField()
-    price = models.IntegerField()
+    seatAvailable = models.PositiveIntegerField()
+    price = models.PositiveIntegerField()
     description = models.TextField()
     artist = models.ManyToManyField(Artist)
     active = models.BooleanField()

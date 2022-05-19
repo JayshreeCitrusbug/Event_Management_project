@@ -10,9 +10,10 @@
     <thead>
 
         <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Genre</th>
-            <th scope="col" style="margin-left: 5px;">Event Date</th>
+            <th scope="col" width="200">Name</th>
+            <th scope="col" width="150">Artist</th>
+            <th scope="col" width="150">Genre</th>
+            <th scope="col" width="200">Event Date</th>
             <th scope="col">Description</th>
         </tr>
     </thead>
@@ -30,7 +31,15 @@
                 <a href="{% url 'login' %}">
                     <h4>{{event.name}}</h4>
                 </a>
-                {% endif %}</th>
+                {% endif %}
+            </th>
+            <td scope="row">
+                {% for artist in event.artist.all %}
+                <a href="{% url 'artist-detail' artist.pk %}">
+                    <p>{{artist}}</p>
+                </a>
+                {%endfor%}
+              </td>
             <td scope="row">{{event.genre}}</td>
             <td>{{event.eventDate}}</td>
             <td>{{event.description}}</td>

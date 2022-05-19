@@ -22,6 +22,10 @@
         <th>Price :</th>
         <td>{{event.price}}</td>
     </tr>
+    <tr>
+        <th>Available seats :</th>
+        <td>{{event.seatAvailable}}</td>
+    </tr>
 
     <tr>
         <button class="btn btn-outline-info" type="submit"><a href="{% url 'price' %}"> Book Your Seat </a></button>

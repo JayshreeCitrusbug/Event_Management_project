@@ -9,15 +9,20 @@ urlpatterns = [
     path('contact/',views.Contact.as_view(), name='contact'),
     #Register
     path('account/', include('django.contrib.auth.urls')),
-    path('account/register/' , UserRegisterView.as_view(), name ='register'),
-    path('account/signup/', UserSignUpView.as_view(), name='signup'),  
+    path('account/register/' , UserRegisterView.as_view(), name ='register'), #Admin
+    path('account/signup/', UserSignUpView.as_view(), name='signup'),  #User
     #Login
     path('account/eventlogin/', views.Login.as_view(), name='login'),
+    #Dashboard
+    path('dashboard/',views.AdminProfileView.as_view(), name='dashboard'),
     #Profile
     path('account/userprofile/', Userprofile.as_view(), name='user-profile'),
     path('account/adminprofile/', AdminProfileView.as_view(), name='admin-profile'),
+    #User 
+    path("users/", views.UserListView.as_view(), name="user-list"),
+    path("users/<int:pk>/detail/", views.UserDetailView.as_view(), name="user-detailview"),
     #Logout
-    path('account/logout/', views.Logout.as_view(), name='logout'),
+    path('account/logout/', views.Logout.as_view(),{'next_page': 'login'}, name='logout'),
     ##Event
     path('event/list/' , EventListview.as_view(), name='event-list'),
     path('event/detail/<int:pk>/', EventDetailView.as_view(), name='event-detail'),

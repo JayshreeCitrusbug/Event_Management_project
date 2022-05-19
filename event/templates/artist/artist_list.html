@@ -11,8 +11,8 @@
 
         <tr>
             <th scope="col">Name</th>
-            <th scope="col">Age</th>
-            <th scope="col">Description</th>
+            <!-- <th scope="col">Age</th>
+            <th scope="col">Description</th> -->
         </tr>
     </thead>
     <tbody>
@@ -21,7 +21,7 @@
             
         </tr>
         <tr>
-            <th>{% if user.is_authenticated %}
+            <th width="250">{% if user.is_authenticated %}
                 <a href="{% url 'artist-detail' artist.pk %}">
                     <h4>{{artist.name}}</h4>
                 </a>
@@ -30,8 +30,8 @@
                     <h4>{{artist.name}}</h4>
                 </a>
                 {% endif %}</th>
-            <td scope="row">{{artist.age}}</td>
-            <td>{{artist.description}}</td>
+            <!-- <td scope="row" width="100">{{artist.age}}</td>
+            <td scope="row">{{artist.description}}</td> -->
         </tr>
         {%endfor%} 
     </tbody>

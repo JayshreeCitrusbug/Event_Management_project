@@ -8,11 +8,12 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 
 # Create your views here.
-from django.views.generic import View, ListView, DetailView, CreateView
+from django.views.generic import View, ListView, DetailView, CreateView, TemplateView
 from django.views.generic.edit import UpdateView, DeleteView
 from event import forms
 from event.models import Event, Artist, EventBook, Genre, Member , User
 from django.contrib.auth.models import auth
+from django.contrib.auth.mixins import LoginRequiredMixin
 from event.forms import  UserNewCreationForm, UserSignUpForm,  AdminLoginForm, AddEventForm, UpdateEventForm, AddArtistForm, EventBookForm
 # ,  AdminProfileForm
 
@@ -74,21 +75,57 @@ class Userprofile(ListView):
 
 #Admin Profile View
 class AdminProfileView(ListView):
-    model = Event
-    template_name = "account/adminprofile.html"
-    un = Member.objects.select_related('user_ptr').all()
-    print('member data' ,un)
-    def get(self, request):
-        eventData = Event.objects.all()
-        # artistname = Artist.objects.all()  ,'showartist':artistname print('artist data', artistname)
-        print('evenrdata',eventData)
-        print(type(eventData))
-        # lst = list(eventData.values())
-        # print(type(lst))
-        return render(request,self.template_name,{'showevent':eventData})
+    # un = Member.objects.select_related('user_ptr').all()
+    # print('member data' ,un)
 
+    template_name = "account/adminprofile.html"
+    context = {}
+
+    def get(self, request):
+        #Event data 
+        self.context['showevent'] = Event.objects.all()
+        print('evenrdata',self.context['showevent'])
+        print(type(self.context['showevent']))
+
+
+        #User count 
+        self.context['user_count']= Member.objects.all().count()
+        print(self.context['user_count'],"count")
+        return render(request, self.template_name, self.context)
+       
+        # return render(request,self.template_name,{'showevent':eventData})
 
         
+        
+
+
+# -----------------------------------------------------------------------------
+# Users
+# -----------------------------------------------------------------------------
+
+
+class UserListView(ListView):
+    """View for User listing"""
+
+    # paginate_by = 25
+    ordering = ["id"]
+    model = User
+    queryset = model.objects.exclude(is_staff=True)
+    template_name = "customadmin/adminuser/user_list.html"
+    permission_required = ("customadmin.view_user",)
+
+    def get_queryset(self):
+        return self.model.objects.exclude(is_staff=True).exclude(email=self.request.user).exclude(email=None)
+
+class UserDetailView(DetailView):
+    template_name = "customadmin/adminuser/user_detail.html"
+    context = {}
+
+    def get(self, request, pk):
+        self.context['user_detail'] = User.objects.filter(pk=pk).first()
+        # self.context['purchased_products'] = PurchasedProduct.objects.filter(user=pk)
+        # self.context['booked_services'] = BookedService.objects.filter(user=pk)
+        return render(request, self.template_name, self.context)
 
 
 #Event list/Detail view

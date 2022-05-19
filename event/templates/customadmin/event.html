@@ -1,0 +1,64 @@
+{% include 'admin/event.html' %}
+<!doctype html>
+<!-- {% load static %} -->
+<html lang="en">
+
+<body>
+
+{% if user.is_authenticated %}
+  <div class="content">
+    <div class="addEvent">
+      <br/>
+      <h3 style="text-align:center">Want to add New Event - <button class="btn btn-outline-info" type="submit"><a
+            href="{% url 'add-event' %}"> Add New Events
+          </a></button></h3>
+      <h3 style="text-align:center">Want to add New Artist - <button class="btn btn-outline-info" type="submit"><a
+            href="{% url 'add-artist' %}"> Add New Artist
+          </a></button></h3>
+    </div>
+    <br />
+    <table class="table table-striped">
+      <thead>
+
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Artist Name</th>
+          <th scope="col" style="margin-left: 5px;">Event Date</th>
+          <th scope="col">Update Event</th>
+          <th scope="col">Delete Event</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for event in showevent %}
+        <tr>
+          <th>
+            <a href="{% url 'event-detail' event.pk %}">
+              <h4>{{event.name}}</h4>
+            </a>
+          </th>
+          <td scope="row">
+            {% for artist in event.artist.all %}
+              <p>{{artist}}</p>
+            {%endfor%}
+          </td>
+          <td scope="row">{{event.eventDate}}</td>
+          <td>
+            <a href="{% url 'update-event' event.pk %}" class="button">
+              Update
+            </a>
+          </td>
+          <td>
+            <a href="{% url 'delete-event' event.pk %}" class="button">
+              Delete
+            </a>
+          </td>
+        </tr>
+        {%endfor%}
+
+
+        {% endif %}
+
+        
+  </div>
+</body>
+</html>
