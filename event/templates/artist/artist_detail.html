@@ -22,7 +22,7 @@
 
     <tr>
         
-        <button class="btn btn-outline-info" type="submit"><a href="{% url 'event-list' %}"> Know about events </a></button>
+        <button class="btn btn-outline-info" type="submit"><a href="{% url 'customadmin:event-list' %}"> Know about events </a></button>
         
         
     </tr>
@@ -31,6 +31,6 @@
 <pre>
 
 </pre>
-<a href="{% url 'artist-list' %}" class="btn btn-secondary"> Back </a>
+<a href="{% url 'customadmin:artist-list' %}" class="btn btn-secondary"> Back </a>
 
 {% endblock %}

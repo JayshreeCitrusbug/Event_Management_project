@@ -54,8 +54,11 @@
     <h3 class="w3-margin w3-jumbo" style="text-align:center">Welcome to the Evyfy......{{request.user.first_name}}
       {{request.user.last_name}}</h3>
     <p class="w3-xlarge" style="text-align:center">The one stop for an event management</p>
-
-    <button class="w3-button w3-black w3-padding-large w3-large w3-margin-top">Get Started</button>
+      {% if user.is_staff %}
+    <a href="{% url 'customadmin:admin-profile' %}"><button class="w3-button w3-black w3-padding-large w3-large w3-margin-top">Get Started</button></a>
+    {% else %}
+    <a href="{% url 'customadmin:user-profile' %}"><button class="w3-button w3-black w3-padding-large w3-large w3-margin-top">Get Started</button></a>
+    {% endif %}
   </header>
 
   <!-- First Grid -->

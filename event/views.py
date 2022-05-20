@@ -13,7 +13,11 @@ from django.views.generic.edit import UpdateView, DeleteView
 from event import forms
 from event.models import Event, Artist, EventBook, Genre, Member , User
 from django.contrib.auth.models import auth
+from django_datatables_too.mixins import DataTableMixin
+from django.template.loader import get_template
+from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
+from event.mixins import HasPermissionsMixin
 from event.forms import  UserNewCreationForm, UserSignUpForm,  AdminLoginForm, AddEventForm, UpdateEventForm, AddArtistForm, EventBookForm
 # ,  AdminProfileForm
 
@@ -103,13 +107,13 @@ class AdminProfileView(ListView):
 # Users
 # -----------------------------------------------------------------------------
 
-
+#............................................................................................................................................
 class UserListView(ListView):
     """View for User listing"""
 
     # paginate_by = 25
     ordering = ["id"]
-    model = User
+    model = Member
     queryset = model.objects.exclude(is_staff=True)
     template_name = "customadmin/adminuser/user_list.html"
     permission_required = ("customadmin.view_user",)
@@ -128,6 +132,109 @@ class UserDetailView(DetailView):
         return render(request, self.template_name, self.context)
 
 
+
+class MyLoginRequiredView(LoginRequiredMixin, View):
+    """View with LoginRequiredMixin."""
+
+    pass
+
+class UserAjaxPagination(DataTableMixin, HasPermissionsMixin, MyLoginRequiredView):
+    """Built this before realizing there is
+    https://bitbucket.org/pigletto/django-datatables-view."""
+
+    model = User
+    queryset = User.objects.all().order_by("last_name")
+
+    def _get_is_superuser(self, obj):
+        """Get boolean column markup."""
+        t = get_template("customadmin/partials/list_boolean.html")
+        return t.render({"bool_val": obj.is_superuser})
+
+    def _get_actions(self, obj, **kwargs):
+        """Get actions column markup."""
+        # ctx = super().get_context_data(**kwargs)
+        t = get_template("customadmin/partials/list_basic_actions.html")
+        # ctx.update({"obj": obj})
+        # print(ctx)
+        return t.render({"o": obj})
+
+    def filter_queryset(self, qs):
+        """Return the list of items for this view."""
+        # If a search term, filter the query
+        if self.search:
+            return qs.filter(
+                Q(username__icontains=self.search)
+                | Q(first_name__icontains=self.search)
+                | Q(last_name__icontains=self.search)
+                # | Q(state__icontains=self.search)
+                # | Q(year__icontains=self.search)
+            )
+        return qs
+
+    def prepare_results(self, qs):
+        # Create row data for datatables
+        data = []
+        for o in qs:
+            data.append(
+                {
+                    "username": o.username,
+                    "first_name": o.first_name,
+                    "last_name": o.last_name,
+                    "is_superuser": self._get_is_superuser(o),
+                    # "modified": o.modified.strftime("%b. %d, %Y, %I:%M %p"),
+                    "actions": self._get_actions(o),
+                }
+            )
+        return data
+
+    """Built this before realizing there is
+    https://bitbucket.org/pigletto/django-datatables-view."""
+
+
+    def _get_is_superuser(self, obj):
+        """Get boolean column markup."""
+        t = get_template("customadmin/partials/list_boolean.html")
+        return t.render({"bool_val": obj.is_superuser})
+
+    def _get_actions(self, obj, **kwargs):
+        """Get actions column markup."""
+        # ctx = super().get_context_data(**kwargs)
+        t = get_template("customadmin/partials/list_basic_actions.html")
+        # ctx.update({"obj": obj})
+        # print(ctx)
+        return t.render({"o": obj})
+
+    def filter_queryset(self, qs):
+        """Return the list of items for this view."""
+        # If a search term, filter the query
+        if self.search:
+            return qs.filter(
+                Q(username__icontains=self.search)
+                | Q(first_name__icontains=self.search)
+                | Q(last_name__icontains=self.search)
+                # | Q(state__icontains=self.search)
+                # | Q(year__icontains=self.search)
+            )
+        return qs
+
+    def prepare_results(self, qs):
+        # Create row data for datatables
+        data = []
+        for o in qs:
+            data.append(
+                {
+                    "username": o.username,
+                    "first_name": o.first_name,
+                    "last_name": o.last_name,
+                    "is_superuser": self._get_is_superuser(o),
+                    # "modified": o.modified.strftime("%b. %d, %Y, %I:%M %p"),
+                    "actions": self._get_actions(o),
+                }
+            )
+        return data
+
+
+#END of Copied code ..........................................................................................................................
 #Event list/Detail view
 class EventListview(ListView):
     model = Event
@@ -325,7 +432,7 @@ class UserSignUpView(CreateView):
         # print(form.cleaned_data)
         if form.is_valid():
             form.save()
-            return redirect('login')
+            return redirect('customadmin:login')
         else:
             msg = "ERROR -->>> form is not valid"
             return HttpResponse(msg)
@@ -354,10 +461,10 @@ class Login(View):
                 if user is not None:
                     if user.is_active and user.is_staff == True:
                         auth.login(request,user)
-                        return redirect('admin-profile')
+                        return redirect('customadmin:admin-profile')
                     else:
                         auth.login(request,user)
-                        return render(request,'account/userprofile.html')
+                        return render(request,'home.html')
                 else:
                     msg = 'If New User than please register first..!!'
                     return render(request, self.template_name, context={'form':form , 'message':msg})
@@ -376,5 +483,5 @@ class Login(View):
 class Logout(View):
     def get(self, request):
         auth.logout(request)
-        return redirect('home')
+        return redirect('home.html')
 

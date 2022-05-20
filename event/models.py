@@ -1,12 +1,17 @@
 from django.db import models
 
 # Create your models here.
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, PermissionsMixin
 #from django.urls import reverse
 from django.utils import timezone 
 
-class Member(User):
+class Member(User,PermissionsMixin):
     event_admin = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = "User"
+        verbose_name_plural = "Users"
+        # ordering = ["-created_at"]
 
 
 class Artist(models.Model):

@@ -29,13 +29,13 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{% url 'home' %}">HOME</a>
+            <a class="nav-link active" aria-current="page" href="{% url 'customadmin:home' %}">HOME</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'event-list' %}">EVENTS</a>
+            <a class="nav-link" href="{% url 'customadmin:event-list' %}">EVENTS</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'artist-list' %}">ARTISTS</a>
+            <a class="nav-link" href="{% url 'customadmin:artist-list' %}">ARTISTS</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
@@ -43,20 +43,20 @@
               PAGES
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="{% url 'about' %}">About US</a></li>
-              <li><a class="dropdown-item" href="{% url 'price' %}">Pricing</a></li>
+              <li><a class="dropdown-item" href="{% url 'customadmin:about' %}">About US</a></li>
+              <li><a class="dropdown-item" href="{% url 'customadmin:price' %}">Pricing</a></li>
               <li><a class="dropdown-item" href="#">Schedule</a></li>
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <li><a class="dropdown-item" href="{% url 'register' %}">Sign Up Admin acoount</a></li>
-              <li><a class="dropdown-item" href="{% url 'login' %}">Log In</a></li>
+              <li><a class="dropdown-item" href="{% url 'customadmin:register' %}">Sign Up Admin acoount</a></li>
+              <li><a class="dropdown-item" href="{% url 'customadmin:login' %}">Log In</a></li>
               <li>
                 <hr class="dropdown-divider">
               </li>
               <li><a class="dropdown-item" href="#">Comming Soon</a></li>
               <li><a class="dropdown-item" href="#">FAQ</a></li>
-              <li><a class="dropdown-item" href="{% url 'contact' %}">Contact US</a></li>
+              <li><a class="dropdown-item" href="{% url 'customadmin:contact' %}">Contact US</a></li>
             </ul>
           </li>
 
@@ -82,17 +82,17 @@
             </li>
             {% endif %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'contact' %}">CONTACT US</a>
+              <a class="nav-link" href="{% url 'customadmin:contact' %}">CONTACT US</a>
             </li>
             
           </ul>
-          <button class="btn btn-outline-info" type="submit" style="margin-right: 10px;"><a href="{% url 'login' %}"> Buy Tickets </a></button>
+          <button class="btn btn-outline-info" type="submit" style="margin-right: 10px;"><a href="{% url 'customadmin:login' %}"> Buy Tickets </a></button>
 
-          <!-- <button class="btn btn-outline-primary" type="submit" style="margin-right: 10px;"><a href="{% url 'register' %}"> SignUp </a></button> -->
+          <!-- <button class="btn btn-outline-primary" type="submit" style="margin-right: 10px;"><a href="{% url 'customadmin:register' %}"> SignUp </a></button> -->
           {% if user.is_authenticated %}
-          <button class="btn btn-outline-danger" type="submit" style="margin-right: 10px;"><a href="{% url 'logout' %}"> Logout </a></button>
+          <button class="btn btn-outline-danger" type="submit" style="margin-right: 10px;"><a href="{% url 'customadmin:logout' %}"> Logout </a></button>
           {% else %}
-          <button class="btn btn-outline-success" type="submit" style="margin-right: 10px;"><a href="{% url 'login' %}"> Login </a></button>
+          <button class="btn btn-outline-success" type="submit" style="margin-right: 10px;"><a href="{% url 'customadmin:login' %}"> Login </a></button>
           {% endif %}
         </form>
       </div>

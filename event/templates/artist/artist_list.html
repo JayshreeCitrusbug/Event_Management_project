@@ -22,11 +22,11 @@
         </tr>
         <tr>
             <th width="250">{% if user.is_authenticated %}
-                <a href="{% url 'artist-detail' artist.pk %}">
+                <a href="{% url 'customadmin:artist-detail' artist.pk %}">
                     <h4>{{artist.name}}</h4>
                 </a>
                 {% elif not is_authenticated %}
-                <a href="{% url 'login' %}">
+                <a href="{% url 'customadmin:login' %}">
                     <h4>{{artist.name}}</h4>
                 </a>
                 {% endif %}</th>

@@ -1,7 +1,7 @@
 from django.urls import path, include
 from . import views   
 from event.views import UserRegisterView, UserSignUpView, Userprofile, AdminProfileView, EventListview, EventDetailView, AddEventView, DeleteEventView, ArtistListview,ArtistDetailView, AddArtistView
-
+app_name='customadmin'
 urlpatterns = [
     path('' , views.Home.as_view(), name='home'),
     path('about/', views.About.as_view(), name='about'),
@@ -22,7 +22,7 @@ urlpatterns = [
     path("users/", views.UserListView.as_view(), name="user-list"),
     path("users/<int:pk>/detail/", views.UserDetailView.as_view(), name="user-detailview"),
     #Logout
-    path('account/logout/', views.Logout.as_view(),{'next_page': 'login'}, name='logout'),
+    path('account/logout/', views.Logout.as_view(),{'next_page': 'home'}, name='logout'),
     ##Event
     path('event/list/' , EventListview.as_view(), name='event-list'),
     path('event/detail/<int:pk>/', EventDetailView.as_view(), name='event-detail'),
