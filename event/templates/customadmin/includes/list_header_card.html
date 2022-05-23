@@ -10,7 +10,7 @@
       <p class="card-subtitle text-muted">{{ subtitle }}</p>
     </div>
 
-    {% if has_add_permission and show_button %}
+    {% if user.is_staff %}
 
 
     {% if  opts.verbose_name_plural == 'Users' %}
@@ -66,14 +66,17 @@
       {% elif opts.verbose_name_plural == 'Flash Deal' %}
 
       <a href="{% url 'customadmin:master-flash-deal' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> Flash Deal Sync</a>
-      
-      
 
-     
+      
+      {% elif verbose_name_plural == 'Events' %}
+      <a href="{% url 'customadmin:add-event' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> New Event</a>
+
+    
+      {% elif verbose_name_plural == 'Artists' %}
+      <a href="{% url 'customadmin:add-artist' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> New Artist</a>
+      
       {% else %}
-  
-      <a href="{% url opts|admin_urlname:'create' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> New {{ opts.verbose_name|capfirst }}</a>
-  
+      <a href="{% url 'customadmin:dashboard' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> New </a>
       {% endif %}
       
     </div>

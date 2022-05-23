@@ -43,10 +43,10 @@ def as_json(obj):
 def admin_urlname(value, arg):
     # print('---------------------------------------------------------------------------------',value)
     pattern = "%s:%s-%s" % (value.app_label, value.model_name, arg)
-    if value.model_name == 'user':
-        pattern = "%s:%s-%s" % ('customadmin', 'user', arg)
-    # if value.model_name == 'usercard':
-    #     pattern = "%s:%s-%s" % ('customadmin', 'usercard', arg)
+    if value.model_name == 'Member':
+        pattern = "%s:%s-%s" % ('event', 'Member', arg)
+    if value.model_name == 'Event':
+        pattern = "%s:%s-%s" % ('event', 'Event', arg)
     # if value.model_name == 'creator':
     #     pattern = "%s:%s-%s" % ('customadmin', 'creator', arg)
     # if value.model_name == 'creatorclass':

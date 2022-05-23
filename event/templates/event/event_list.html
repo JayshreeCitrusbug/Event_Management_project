@@ -24,18 +24,18 @@
         </tr>
         <tr>
             <th>{% if user.is_authenticated %}
-                <a href="{% url 'event-detail' event.pk %}">
+                <a href="{% url 'customadmin:event-detail' event.pk %}">
                     <h4>{{event.name}}</h4>
                 </a>
                 {% elif not is_authenticated %}
-                <a href="{% url 'login' %}">
+                <a href="{% url 'customadmin:login' %}">
                     <h4>{{event.name}}</h4>
                 </a>
                 {% endif %}
             </th>
             <td scope="row">
                 {% for artist in event.artist.all %}
-                <a href="{% url 'artist-detail' artist.pk %}">
+                <a href="{% url 'customadmin:artist-detail' artist.pk %}">
                     <p>{{artist}}</p>
                 </a>
                 {%endfor%}

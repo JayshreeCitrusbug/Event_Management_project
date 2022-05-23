@@ -1,0 +1,97 @@
+{% extends 'customadmin/change_list.html' %}
+
+{% load static %}
+{% load admin_extras %}
+{% load misc_filters %}
+{% load i18n %}
+
+{% include "customadmin/sidebar.html" %}
+
+{% block page_content %}
+
+    {% csrf_token %}
+
+    
+
+    {% include "customadmin/includes/list_header_card.html" with title="Create a new Artist" subtitle="Create a new Artist." show_button=True %}
+
+    <div class="ibox float-e-margins">
+      <div class="ibox-title">
+            <div class="ibox-tools">
+                {% if user.is_staff %}
+                {% if has_add_permission and show_button %}
+                <a href="{% url 'customadmin:add-artist' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> Add Artist</a>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>  
+
+
+        <div class="ibox-content">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover" >
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Description</th>
+                            <th>View Artist</th>
+                            <th>Update Artist</th>
+                            <th>Delete Artist</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Description</th>
+                            <th>View Artist</th>
+                            <th>Update Artist</th>
+                            <th>Delete Artist</th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                      {% for artist in showartist %}
+                        <tr>
+                            <td><h5>
+                              {{artist.name}}
+                              </h5>
+                            </td>
+                            <td>{{ artist.age }}</td>
+                            <td>{{ artist.description }}</td>
+                            <td>
+                              <a href="{% url 'customadmin:artist-detail' artist.pk %}" class="btn btn-info btn-xs"><i class="fa fa-eye"></i></button>
+                              </a>
+                            </td>
+                            <td>
+                                <a href="{% url 'customadmin:update-artist' artist.pk %}" class='btn btn-primary btn-xs'><i class="fa fa-pencil-square-o"></i>
+                                </a>
+                              </td>
+                              <td>
+                                <a href="" class="btn btn-danger btn-xs btn-delete"><i class="fa fa-trash"></i>
+                                </a>
+                              </td>
+                           
+                            <td class="row-actions">
+                                {% include "customadmin/partials/list_row_actions.html" %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block js %}
+{{ block.super }}
+<script src="{% static 'customadmin/js/userroles.js' %}"></script>
+
+
+{% endblock %}

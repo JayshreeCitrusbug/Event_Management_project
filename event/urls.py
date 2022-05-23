@@ -15,6 +15,9 @@ urlpatterns = [
     path('account/eventlogin/', views.Login.as_view(), name='login'),
     #Dashboard
     path('dashboard/',views.AdminProfileView.as_view(), name='dashboard'),
+    #Admin pannel event artist page
+    path('events/', views.Eventview.as_view(), name = 'admin-event-view'),
+    path('artist/', views.Artistview.as_view(), name = 'admin-artist-view'),
     #Profile
     path('account/userprofile/', Userprofile.as_view(), name='user-profile'),
     path('account/adminprofile/', AdminProfileView.as_view(), name='admin-profile'),
@@ -38,4 +41,5 @@ urlpatterns = [
     path('artist/detail/<int:pk>/', ArtistDetailView.as_view(), name='artist-detail'),
         #Add Artist
     path('artist/add/', AddArtistView.as_view(), name='add-artist'),
+    path('artist/update/<int:pk>/', views.UpdateArtistView.as_view(), name='update-artist'),
 ]

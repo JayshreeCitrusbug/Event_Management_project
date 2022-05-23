@@ -18,10 +18,11 @@ from django.template.loader import get_template
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from event.mixins import HasPermissionsMixin
-from event.forms import  UserNewCreationForm, UserSignUpForm,  AdminLoginForm, AddEventForm, UpdateEventForm, AddArtistForm, EventBookForm
-# ,  AdminProfileForm
+from event.forms import  UserNewCreationForm, UserSignUpForm,  AdminLoginForm, AddEventForm,  AddArtistForm, EventBookForm
+# ,  AdminProfileForm, UpdateEventForm,
 
 from django.contrib import messages
+# from event.generic import *
 
 #from django.views import generic
 # from django.contrib.auth.forms import UserCreationForm
@@ -57,14 +58,34 @@ class Price(View):
         return render(request, self.template_name, {})
 
 #Contact Page
+class Eventview(View):
+    model = Event
+    template_name = "customadmin/event.html"
+    context = {}
+
+    def get(self, request):
+        #Event data 
+        self.context['showevent'] = Event.objects.all()
+        print('evenrdata',self.context['showevent'])
+        print(type(self.context['showevent']))
+        return render(request, self.template_name, self.context)
+
+class Artistview(View):
+    model = Artist
+    template_name = "customadmin/artist.html"
+    context = {}
+    def get(self, request):
+        #Event data 
+        self.context['showartist'] = Artist.objects.all()
+        print('artistdata',self.context['showartist'])
+        print(type(self.context['showartist']))
+        return render(request, self.template_name, self.context)
+    
 class Contact(View):
     template_name = "contact.html"
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, {})
-
-
-
 
 
 
@@ -87,10 +108,9 @@ class AdminProfileView(ListView):
 
     def get(self, request):
         #Event data 
-        self.context['showevent'] = Event.objects.all()
-        print('evenrdata',self.context['showevent'])
-        print(type(self.context['showevent']))
-
+        # self.context['showevent'] = Event.objects.all()
+        # print('evenrdata',self.context['showevent'])
+        # print(type(self.context['showevent']))
 
         #User count 
         self.context['user_count']= Member.objects.all().count()
@@ -120,6 +140,13 @@ class UserListView(ListView):
 
     def get_queryset(self):
         return self.model.objects.exclude(is_staff=True).exclude(email=self.request.user).exclude(email=None)
+
+    def get_context_data(self, **kwargs):
+        """Returns the context data to use in this view."""
+        ctx = super().get_context_data(**kwargs)
+        if hasattr(self, "model"):
+            ctx["opts"] = self.model._meta
+        return ctx
 
 class UserDetailView(DetailView):
     template_name = "customadmin/adminuser/user_detail.html"
@@ -281,15 +308,15 @@ class AddEventView(CreateView):
 
 class UpdateEventView(UpdateView):
     model = Event
-    form_class = UpdateEventForm
+    form_class = AddEventForm
     template_name = 'event/update_event.html'
     
 
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, {'form':self.form_class})
+    # def get(self, request, *args, **kwargs):
+    #     return render(request, self.template_name, {'form':self.form_class})
 
     def get_success_url(self):
-         return reverse_lazy('admin-profile')
+         return reverse_lazy('customadmin:admin-event-view')
 
 
 class DeleteEventView(DeleteView):
@@ -297,7 +324,7 @@ class DeleteEventView(DeleteView):
     template_name = 'event/delete_event.html'
 
     def get_success_url(self):
-         return reverse_lazy('admin-profile')
+         return reverse_lazy('customadmin:admin-event-view')
 # ............................................................
 # class UpdateEventView(UpdateView):
 #     model = Event
@@ -356,24 +383,24 @@ class AddArtistView(CreateView):
         form =self.form_class(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('artist-list')
+            return redirect('customadmin:artist-list')
         else:
             msg = "Artist can not generated please Try Again later. "
             return HttpResponse(msg)
 
 
 
-# class UpdateArtistView(UpdateView):
-#     model = Event
-#     form_class = UpdateArtistForm
-#     template_name = 'event/update_event.html'
+class UpdateArtistView(UpdateView):
+    model = Artist
+    form_class = AddArtistForm
+    template_name = 'artist/update_artist.html'
     
 
-#     def get(self, request, *args, **kwargs):
-#         return render(request, self.template_name, {'form':self.form_class})
+    # def get(self, request, *args, **kwargs):
+    #     return render(request, self.template_name, {'form':self.form_class})
 
-#     def get_success_url(self):
-#          return reverse_lazy('admin-profile')
+    def get_success_url(self):
+         return reverse_lazy('customadmin:admin-artist-view')
 
 
 
@@ -410,7 +437,7 @@ class UserRegisterView(CreateView):
             form.save()
             # msg = "form is valid data is added in db"
             # return HttpResponse(msg)
-            return redirect('login')
+            return redirect('customadmin:login')
         else:
             msg = "ERROR -->>> form is not valid"
             return HttpResponse(msg)

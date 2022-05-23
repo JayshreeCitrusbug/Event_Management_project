@@ -8,10 +8,12 @@ from django.utils import timezone
 class Member(User,PermissionsMixin):
     event_admin = models.BooleanField(default=False)
 
-    class Meta:
-        verbose_name = "User"
-        verbose_name_plural = "Users"
+    # class Meta:
+    #     verbose_name = "User"
+    #     verbose_name_plural = "Users"
         # ordering = ["-created_at"]
+    # def __str__(self):
+    #     return self.user.name 
 
 
 class Artist(models.Model):
@@ -21,6 +23,10 @@ class Artist(models.Model):
 
     def __str__(self):
         return self.name 
+
+    class Meta:
+        verbose_name = "Artist"
+        verbose_name_plural = 'Artists'
 
     # def get_absolute_url(self):
     #     return reverse('event-list')
@@ -37,6 +43,10 @@ class Event(models.Model):
     description = models.TextField()
     artist = models.ManyToManyField(Artist)
     active = models.BooleanField()
+
+    class Meta:
+        verbose_name = "Event"
+        verbose_name_plural = 'Events'
     
     def __str__(self):
         return self.name

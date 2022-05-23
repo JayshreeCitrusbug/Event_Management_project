@@ -6,65 +6,55 @@ from .models import Member, Artist, Event, Genre, EventBook
 from .forms import AccountUpdateForm, AccountCreationForm
 from django.utils.translation import ugettext_lazy as _
 
-class UserAdmin(UserAdmin):
-    form = AccountUpdateForm
-    add_form = AccountCreationForm
+# class UserAdmin(UserAdmin):
+#     form = AccountUpdateForm
+#     add_form = AccountCreationForm
 
-    list_per_page = 10
-    list_display = ["pk", "email", "username",]
+#     list_per_page = 10
+#     list_display = ["pk", "email", "username",]
 
-    fieldsets = (
-        (None, {"fields": ("email", "password")}),
-        (
-            _("Personal info"),
-            {
-                "fields": (
-                    "first_name",
-                    "last_name",
-                    "username",
-                    "profile_image",
-                    "date_of_birth",
-                    "language",
-                    "customer_id",
-                    "address",
-                    "otp",
-                    "otp_expired_at",
-                    "phone",
-                    "email_verified",
-                )
-            },
-        ),
-        (
-            _("Permissions"),
-            {
-                "fields": (
-                    "groups",
-                    "user_permissions",
-                )
-            },
-        ),
-    )
-    add_fieldsets = (
-        (
-            None,
-            {
-                "classes": ("wide",),
-                "fields": (
-                    "first_name",
-                    "last_name",
-                    "email",
-                    "password1",
-                    "password2",
-                    "profile_image",
-                ),
-            },
-        ),
-    )
+#     fieldsets = (
+#         (None, {"fields": ("email", "password")}),
+#         (
+#             _("Personal info"),
+#             {
+#                 "fields": (
+#                     "first_name",
+#                     "last_name",
+#                     "username",
+#                 )
+#             },
+#         ),
+#         (
+#             _("Permissions"),
+#             {
+#                 "fields": (
+#                     "groups",
+#                     "user_permissions",
+#                 )
+#             },
+#         ),
+#     )
+#     add_fieldsets = (
+#         (
+#             None,
+#             {
+#                 "classes": ("wide",),
+#                 "fields": (
+#                     "first_name",
+#                     "last_name",
+#                     "email",
+#                     "password1",
+#                     "password2",
+#                 ),
+#             },
+#         ),
+#     )
 
-    def save_model(self, request, obj, form, change):
-        instance = form.save(commit=False)
-        instance.save()
-        return instance
+#     def save_model(self, request, obj, form, change):
+#         instance = form.save(commit=False)
+#         instance.save()
+#         return instance
 
 
 # class TestimonialAdmin(admin.ModelAdmin):
@@ -156,7 +146,7 @@ class UserAdmin(UserAdmin):
 #     list_display = ["pk", "category_image"]
 
 
-admin.site.register(Member, UserAdmin)
+admin.site.register(Member)
 admin.site.register(Artist)
 admin.site.register(Event)
 admin.site.register(Genre)
