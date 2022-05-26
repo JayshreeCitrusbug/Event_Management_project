@@ -30,7 +30,7 @@
 {% block breadcrumbs %}
 <div class="row wrapper border-bottom white-bg breadcrumb-heading">
     <div class="col-lg-10">
-        <h2>{% block page_header %}{{ opts.verbose_name|capfirst }}{% endblock %}</h2>
+        <h2>{% block page_header %}{{ opts.verbose_name }}{% endblock %}</h2>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 {% block current_breadcrumb %}{% endblock %}

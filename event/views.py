@@ -1,3 +1,4 @@
+from datetime import *
 from imaplib import _Authenticator
 from re import template
 from types import MemberDescriptorType
@@ -5,7 +6,7 @@ from urllib import request
 from django import forms, views
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 
 # Create your views here.
 from django.views.generic import View, ListView, DetailView, CreateView, TemplateView
@@ -18,7 +19,7 @@ from django.template.loader import get_template
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from event.mixins import HasPermissionsMixin
-from event.forms import  UserNewCreationForm, UserSignUpForm,  AdminLoginForm, AddEventForm,  AddArtistForm, EventBookForm
+from event.forms import  UserNewCreationForm, UserSignUpForm,  AdminLoginForm, AddEventForm,  AddArtistForm, EventBookForm, UserUpdateForm
 # ,  AdminProfileForm, UpdateEventForm,
 
 from django.contrib import messages
@@ -30,74 +31,48 @@ from django.contrib import messages
 
 
 
+
+# -.-.-.-.-.-.-.-.-.-.-.-.-..-.-.-.-..--.-..-.-.-.-.-.-.-.-.-.-.-.-.-..-.-.-.-..--.-..
 #Home page
 class Home(View):
     template_name = "home.html"
 
     def get(self, request, *args, **kwargs):
-        # un1=request.POST['username']
-        # user1 = User.objects.get(username=un1)
-        # print(user1)
         return render(request, self.template_name, {})
+
 #About Page
 class About(View):
     template_name = "about.html"
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, {})
-#Price
+
+# Price
 class Price(View):
     model = Event
     template_name = "event/price.html"
-    # lst = []
-    # for e in Event.objects.get('price'):
-    #     lst.append(e)
-    #     print("rupee",lst)
     def get(self, request, *args, **kwargs):
-        
         return render(request, self.template_name, {})
 
-#Contact Page
-class Eventview(View):
-    model = Event
-    template_name = "customadmin/event.html"
-    context = {}
 
-    def get(self, request):
-        #Event data 
-        self.context['showevent'] = Event.objects.all()
-        print('evenrdata',self.context['showevent'])
-        print(type(self.context['showevent']))
-        return render(request, self.template_name, self.context)
-
-class Artistview(View):
-    model = Artist
-    template_name = "customadmin/artist.html"
-    context = {}
-    def get(self, request):
-        #Event data 
-        self.context['showartist'] = Artist.objects.all()
-        print('artistdata',self.context['showartist'])
-        print(type(self.context['showartist']))
-        return render(request, self.template_name, self.context)
-    
+#Contact Page    
 class Contact(View):
     template_name = "contact.html"
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, {})
 
+# -.-.-.-.-.-.-.-.-.-.-.-.-..-.-.-.-..--.-..-.-.-.-.-.-.-.-.-.-.-.-.-..-.-.-.-..--.-..
 
 
-#User Profile
-class Userprofile(ListView):
-    model = Event
-    template_name = "account/userprofile.html"
-
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, {})
 
 
+
+
+        
+# -.-.-.-.-.-.-.-.-.-.-.-.-..-.-.-.-..--.-..-.-.-.-.-.-.-.-.-.-.-.-.-..-.-.-.-..--.-..
+# Admin Pannel
+# -.-.-.-.-.-.-.-.-.-.-.-.-..-.-.-.-..--.-..-.-.-.-.-.-.-.-.-.-.-.-.-..-.-.-.-..--.-..        
 #Admin Profile View
 class AdminProfileView(ListView):
     # un = Member.objects.select_related('user_ptr').all()
@@ -113,30 +88,30 @@ class AdminProfileView(ListView):
         # print(type(self.context['showevent']))
 
         #User count 
-        self.context['user_count']= Member.objects.all().count()
-        print(self.context['user_count'],"count")
+        self.context['total_user_count']= User.objects.all().count() - int(User.objects.filter(is_superuser =True).count())
+        print(self.context['total_user_count'],"Total user count")
+
+        self.context['admin_user_count']= Member.objects.all().count()
+        print(self.context['admin_user_count'],"Admin user count")
+        
+        self.context['user_count'] = User.objects.filter(is_staff = False).filter(is_superuser=False).count()
+        print(self.context['user_count']," User count")
         return render(request, self.template_name, self.context)
        
         # return render(request,self.template_name,{'showevent':eventData})
 
-        
-        
-
-
-# -----------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------
 # Users
-# -----------------------------------------------------------------------------
-
-#............................................................................................................................................
+# ---------------------------------------------------------------------------------------------------------------
 class UserListView(ListView):
     """View for User listing"""
 
     # paginate_by = 25
     ordering = ["id"]
-    model = Member
+    model = User
     queryset = model.objects.exclude(is_staff=True)
     template_name = "customadmin/adminuser/user_list.html"
-    permission_required = ("customadmin.view_user",)
+    
 
     def get_queryset(self):
         return self.model.objects.exclude(is_staff=True).exclude(email=self.request.user).exclude(email=None)
@@ -154,142 +129,62 @@ class UserDetailView(DetailView):
 
     def get(self, request, pk):
         self.context['user_detail'] = User.objects.filter(pk=pk).first()
-        # self.context['purchased_products'] = PurchasedProduct.objects.filter(user=pk)
-        # self.context['booked_services'] = BookedService.objects.filter(user=pk)
         return render(request, self.template_name, self.context)
 
 
-
-class MyLoginRequiredView(LoginRequiredMixin, View):
-    """View with LoginRequiredMixin."""
-
-    pass
-
-class UserAjaxPagination(DataTableMixin, HasPermissionsMixin, MyLoginRequiredView):
-    """Built this before realizing there is
-    https://bitbucket.org/pigletto/django-datatables-view."""
+class UserUpdateView(UpdateView):
+    """View to update User"""
 
     model = User
-    queryset = User.objects.all().order_by("last_name")
+    form_class = UserUpdateForm
+    template_name = "customadmin/adminuser/update_user.html"
+    permission_required = ("customadmin.change_user",)
 
-    def _get_is_superuser(self, obj):
-        """Get boolean column markup."""
-        t = get_template("customadmin/partials/list_boolean.html")
-        return t.render({"bool_val": obj.is_superuser})
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        # kwargs["user"] = self.request.user
+        return kwargs
 
-    def _get_actions(self, obj, **kwargs):
-        """Get actions column markup."""
-        # ctx = super().get_context_data(**kwargs)
-        t = get_template("customadmin/partials/list_basic_actions.html")
-        # ctx.update({"obj": obj})
-        # print(ctx)
-        return t.render({"o": obj})
-
-    def filter_queryset(self, qs):
-        """Return the list of items for this view."""
-        # If a search term, filter the query
-        if self.search:
-            return qs.filter(
-                Q(username__icontains=self.search)
-                | Q(first_name__icontains=self.search)
-                | Q(last_name__icontains=self.search)
-                # | Q(state__icontains=self.search)
-                # | Q(year__icontains=self.search)
-            )
-        return qs
-
-    def prepare_results(self, qs):
-        # Create row data for datatables
-        data = []
-        for o in qs:
-            data.append(
-                {
-                    "username": o.username,
-                    "first_name": o.first_name,
-                    "last_name": o.last_name,
-                    "is_superuser": self._get_is_superuser(o),
-                    # "modified": o.modified.strftime("%b. %d, %Y, %I:%M %p"),
-                    "actions": self._get_actions(o),
-                }
-            )
-        return data
-
-    """Built this before realizing there is
-    https://bitbucket.org/pigletto/django-datatables-view."""
+    def get_success_url(self):
+        # opts = self.model._meta
+        return reverse("customadmin:user-list")
+#END of custom admin user's code .....................................................
 
 
-    def _get_is_superuser(self, obj):
-        """Get boolean column markup."""
-        t = get_template("customadmin/partials/list_boolean.html")
-        return t.render({"bool_val": obj.is_superuser})
-
-    def _get_actions(self, obj, **kwargs):
-        """Get actions column markup."""
-        # ctx = super().get_context_data(**kwargs)
-        t = get_template("customadmin/partials/list_basic_actions.html")
-        # ctx.update({"obj": obj})
-        # print(ctx)
-        return t.render({"o": obj})
-
-    def filter_queryset(self, qs):
-        """Return the list of items for this view."""
-        # If a search term, filter the query
-        if self.search:
-            return qs.filter(
-                Q(username__icontains=self.search)
-                | Q(first_name__icontains=self.search)
-                | Q(last_name__icontains=self.search)
-                # | Q(state__icontains=self.search)
-                # | Q(year__icontains=self.search)
-            )
-        return qs
-
-    def prepare_results(self, qs):
-        # Create row data for datatables
-        data = []
-        for o in qs:
-            data.append(
-                {
-                    "username": o.username,
-                    "first_name": o.first_name,
-                    "last_name": o.last_name,
-                    "is_superuser": self._get_is_superuser(o),
-                    # "modified": o.modified.strftime("%b. %d, %Y, %I:%M %p"),
-                    "actions": self._get_actions(o),
-                }
-            )
-        return data
-
-
-#END of Copied code ..........................................................................................................................
-#Event list/Detail view
-class EventListview(ListView):
+# ---------------------------------------------------------------------------------------------------------------
+# Event
+# ---------------------------------------------------------------------------------------------------------------
+class Eventview(ListView):
     model = Event
-    template_name = 'event/event_list.html'
+    template_name = "customadmin/adminuser/event.html"
    
-class EventDetailView(DetailView):
-    model = Event
-    template_name = 'event/event_detail.html'
 
-class EventBookView(View):
-    model = EventBook
-    template_name = 'event/eventbook.html'
-    form_class = EventBookForm
-    
-    def get(self, request):
-        data = EventBook.objects.all()
-        print("booking data",data)
-        return render(request, self.template_name, {'form':self.form_class,'booking_data':data})
+    def get_queryset(self):
+        return self.model.objects.all()
 
-    def post(self,request):
-        form =self.form_class(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('event/success.html')
-        else:
-            msg = "Can not Book seats Please try again "
-            return HttpResponse(msg)
+    def get_context_data(self, **kwargs):
+        """Returns the context data to use in this view."""
+        
+        ctx = super().get_context_data(**kwargs)
+        ctx['showevent'] = Event.objects.all()
+        if hasattr(self, "model"):
+            ctx["opts"] = self.model._meta
+        return ctx
 
+    # context = {}
+    # def get(self, request):
+    #     #Event data 
+    #     self.context['showevent'] = Event.objects.all()
+    #     print('eventdata',self.context['showevent'])
+    #     return render(request, self.template_name, self.context)
+
+# class EventAdminDetailView(DetailView):
+#     template_name = "customadmin/adminuser/event_detail.html"
+#     context = {}
+
+#     def get(self, request, pk):
+#         self.context['event_detail'] = Event.objects.filter(pk=pk).first()
+#         return render(request, self.template_name, self.context)
 
 class AddEventView(CreateView):
     model = Event
@@ -325,6 +220,153 @@ class DeleteEventView(DeleteView):
 
     def get_success_url(self):
          return reverse_lazy('customadmin:admin-event-view')
+
+
+class EventCount(View):
+    model = Event
+    
+    template_name = 'customadmin/chart.html'
+    
+
+    def get(self, request, *args, **kwargs):
+        # queryset = self.model.objects.getvalues('eventDate')
+        mon = [1,2,,3,4,5,6,7,8,9,10,11,12]
+        count = 0
+        queryset = Event.objects.values('eventDate')
+        for data in queryset:
+            for d,v in data.items():
+                mon.append(v.month)
+                my_dict = {i:mon.count(i) for i in mon}
+        print(my_dict)
+        #         for i in mon: 
+        #             count = mon.count(i)
+        # print(i,count)
+                    
+                # if v.month not in mon:
+                #     mon.append(v.month)
+                #     count = count + 1
+                # elif v.month in mon:
+                #     count += 1
+                #     continue
+                # # print(v.month)
+        print('month',mon)
+        
+                # print(count)
+                
+        print(queryset)
+        return render(request, self.template_name, {'queryset':queryset,'my_dict':my_dict})
+
+# ---------------------------------------------------------------------------------------------------------------
+# Artist
+# ---------------------------------------------------------------------------------------------------------------
+class Artistview(ListView):
+    model = Artist
+    # queryset = model.objects.exclude()
+    template_name = "customadmin/adminuser/artist.html"
+    
+    def get_queryset(self):
+        return self.model.objects.all()
+
+    def get_context_data(self, **kwargs):
+        """Returns the context data to use in this view."""
+        ctx = super().get_context_data(**kwargs)
+        ctx['showartist'] = Artist.objects.all()
+        if hasattr(self, "model"):
+            ctx["opts"] = self.model._meta
+        return ctx
+    
+    # context = {}
+    # def get(self, request):
+    #     #Artist data 
+    #     self.context['showartist'] = Artist.objects.all()
+    #     print('artistdata',self.context['showartist'])
+    #     return render(request, self.template_name, self.context)
+
+
+class AddArtistView(CreateView):
+    model = Artist
+    form_class = AddArtistForm
+    template_name = 'artist/add_artist.html'
+
+    def post(self, request):
+        form =self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('customadmin:artist-list')
+        else:
+            msg = "Artist can not generated please Try Again later. "
+            return HttpResponse(msg)
+
+
+class UpdateArtistView(UpdateView):
+    model = Artist
+    form_class = AddArtistForm
+    template_name = 'artist/update_artist.html'
+    
+
+    # def get(self, request, *args, **kwargs):
+    #     return render(request, self.template_name, {'form':self.form_class})
+
+    def get_success_url(self):
+         return reverse_lazy('customadmin:admin-artist-view')
+
+
+
+
+
+
+# -.-.-.-.-.-.-.-.-.-.-.-.-..-.-.-.-..--.-..-.-.-.-.-.-.-.-.-.-.-.-.-..-.-.-.-..--.-..
+# Normal User Pannel
+# -.-.-.-.-.-.-.-.-.-.-.-.-..-.-.-.-..--.-..-.-.-.-.-.-.-.-.-.-.-.-.-..-.-.-.-..--.-.. 
+#User Profile
+class Userprofile(ListView):
+    model = Event
+    template_name = "account/userprofile.html"
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, {})
+
+
+# --------------------------------------------------------------------------
+# Event
+# --------------------------------------------------------------------------
+#Event list/Detail view
+class EventListview(ListView):
+    model = Event
+    template_name = 'event/event_list.html'
+    
+   
+class EventDetailView(DetailView):
+    model = Event
+    template_name = 'event/event_detail.html'
+
+class EventBookView(View):
+    model = EventBook
+    template_name = 'event/eventbook.html'
+    form_class = EventBookForm
+    
+    def get(self, request):
+        data = EventBook.objects.filter(user=request.user)
+        # print("booking data",data)
+    
+        print(request.user.id)
+        # form = self.form.instance.event_id = pk
+        # print(form)
+        return render(request, self.template_name, {'form':self.form_class,'booking_data':data})
+
+    def post(self,request):
+        form =self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            form.instance.user = request.user
+            form.save()
+            return render(request , 'event/success.html')
+        else:
+            msg = "Can not Book seats Please try again "
+            return HttpResponse(msg)
+
+
+
 # ............................................................
 # class UpdateEventView(UpdateView):
 #     model = Event
@@ -363,7 +405,9 @@ class DeleteEventView(DeleteView):
 # END Event list Detail view
 
 
-
+# ---------------------------------------------------------------------------------
+# Artist
+# ---------------------------------------------------------------------------------
 #Artist list detail View
 
 class ArtistListview(ListView):
@@ -373,46 +417,6 @@ class ArtistListview(ListView):
 class ArtistDetailView(DetailView):
     model = Artist
     template_name = 'artist/artist_detail.html'
-
-class AddArtistView(CreateView):
-    model = Artist
-    form_class = AddArtistForm
-    template_name = 'artist/add_artist.html'
-
-    def post(self, request):
-        form =self.form_class(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('customadmin:artist-list')
-        else:
-            msg = "Artist can not generated please Try Again later. "
-            return HttpResponse(msg)
-
-
-
-class UpdateArtistView(UpdateView):
-    model = Artist
-    form_class = AddArtistForm
-    template_name = 'artist/update_artist.html'
-    
-
-    # def get(self, request, *args, **kwargs):
-    #     return render(request, self.template_name, {'form':self.form_class})
-
-    def get_success_url(self):
-         return reverse_lazy('customadmin:admin-artist-view')
-
-
-
-
-
-
-
-
-
-
-
-
 
 #END Artist list detail View
 
@@ -510,5 +514,5 @@ class Login(View):
 class Logout(View):
     def get(self, request):
         auth.logout(request)
-        return redirect('home.html')
+        return redirect('customadmin:home')
 

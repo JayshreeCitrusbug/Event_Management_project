@@ -1,0 +1,126 @@
+
+
+{% extends 'customadmin/change_form.html' %}
+{% load static %}
+
+{% load admin_extras %}
+{% load misc_filters %}
+
+{% load i18n %}
+
+
+{% block page_content %}
+    <form id="{{ opts.model_name }}-form" action="" method="post" enctype="multipart/form-data" autocomplete="off">
+
+        {% include "customadmin/partials/form_hidden_fields.html" %}
+
+        <div class="ibox float-e-margins">
+
+            {% include "customadmin/partials/ibox_title.html" with ibox_title="Login Credentials" icon_class="fas fa-sign-in-alt" only %}
+
+            <div class="ibox-content">
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        Email  <br>
+                        {{ form.email}}
+                    </div>
+                    <div class="col-sm-6">
+                        Username<br>
+                        {{ form.username}}
+                    </div>
+                </div>
+                    <br>
+
+                <div class="row">
+                    
+                    <div class="col-sm-6">
+                        Password <br>
+                        {{ form.password }}
+                    </div>
+                    <br>
+                </div>
+            </div>
+            <!-- /ibox-content -->
+
+        </div>
+        <!-- /ibox --> 
+
+        <div class="ibox float-e-margins">
+
+            {% include "customadmin/partials/ibox_title.html" with ibox_title="Personal Info" icon_class="fas fa-user" only %}
+
+            <div class="ibox-content">
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        First name <br>
+                        {{ form.first_name}}
+                    </div>
+                    <div class="col-sm-6">
+                        Last name <br>
+                        {{ form.last_name }}
+                    </div>
+                </div>
+                <br>
+                
+               
+
+                
+            </div>
+            <!-- /ibox-content -->
+
+        </div>
+        <!-- /ibox -->
+
+        <div class="ibox float-e-margins">
+
+            {% include "customadmin/partials/ibox_title.html" with ibox_title="Permissions" icon_class="fas fa-key" only %}
+
+            <div class="ibox-content">
+
+                <div class="row">
+                    <div class="col-sm-4">
+                        {% input_icheck form.is_active %}
+                        </div>
+                    {% if request.user.is_superuser %}
+                        <div class="col-sm-4">
+                            {% input_icheck form.is_staff %}
+                            {{user.groups}}
+                        </div>
+                        
+                    {% endif%}                 
+                </div>
+
+                <hr/>
+
+
+            </div>
+            <!-- /ibox-content -->
+
+        </div>
+        <!-- /ibox -->
+
+        <div class="modal-footer">
+            <a href="{% url 'customadmin:user-list' %}" class="btn-delete btn btn-secondary"><i class="fa fa-backward"> Back </i></a>
+            <!-- <a href="#" class="btn-delete btn btn-danger"><i class="fas fa-trash-alt"> Delete </i></a> -->
+            <button class="btn btn-primary" type="submit"><i class="fa fa-check"> Save </i></button>
+            
+          
+    </div>
+
+    </form>
+
+{% endblock %}
+
+
+{% block js %}
+{{ block.super }}
+<script src="{% static 'customadmin/js/userroles.js' %}"></script>
+
+<script>
+    $(function() {
+        userroles.users.details();
+    });
+</script>
+{% endblock %}

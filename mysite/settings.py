@@ -125,6 +125,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
+
+MEDIA_URL = '/media/'
+
+
+
 STATIC_URL = 'static/'
 
 STATIC_FILES = os.path.join(os.path.dirname(BASE_DIR), "event", "templates")
@@ -135,7 +141,7 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, "event", "static"),)
 # print('STATIC_FILES', STATIC_FILES)
 
 
-
+# LOGOUT_REDIRECT_URL = "customadmin:home"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

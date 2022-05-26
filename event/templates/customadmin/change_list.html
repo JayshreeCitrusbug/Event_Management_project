@@ -6,7 +6,7 @@
 
 
 {% block title %}
-    {{ opts.verbose_name_plural|capfirst }}
+    {{ opts.verbose_name_plural }}
 
 {% endblock%}
 
@@ -19,7 +19,7 @@
 
     {% else %}
 
-    {{ opts.verbose_name_plural|capfirst }}
+    {{ opts.verbose_name_plural }}
 
     {% endif %}
 
@@ -40,7 +40,7 @@
 
     {% else %}
 
-    {{ opts.verbose_name_plural|capfirst }}
+    {{ opts.verbose_name_plural }}
 
     {% endif %}
 

@@ -76,57 +76,27 @@
     <div class="columns">
         <ul class="price">
             <li class="header">Silver</li>
+            {% for event in showevent %}
             <li class="grey"> {{event.price}}/ seat</li>
+            {% endfor %}
             <li>Normal Seat</li>
             <li>NO Snacks</li>
             <li>NO Welcom Drink</li>
             <li>NO Extra Beverages</li>
 
             {% if user.is_authenticated %}
-            <li class="grey"><a href="{% url 'event-booked'  %}" class="button">Book Your Seat</a></li>
+            {% for event in eve_book %}
+            <li class="grey"><a href="{% url 'customadmin:event-booked'  %}" class="button">Book Your Seat</a></li>
+            {% endfor %}
             {% elif not is_authenticated %}
-            <li class="grey"><a href="{% url 'login' %}" class="button">Book Your Seat</a></li>
+            <li class="grey"><a href="{% url 'customadmin:login' %}" class="button">Book Your Seat</a></li>
             {% endif %}
+            
 
         </ul>
     </div>
 
-    <!-- <div class="columns">
-        <ul class="price">
-            <li class="header" style="background-color:#04AA6D">Gold</li>
-            <li class="grey">$ 24.99 / Seat</li>
-            <li>Chair Seats</li>
-            <li>NO Snacks</li>
-            <li>Welcom Drink</li>
-            <li>Limited Extra Beverages</li>
-
-            {% if user.is_authenticated %}
-            <li class="grey"><a href="{% url 'event-booked' %}" class="button">Book Your Seat</a></li>
-            {% elif not is_authenticated %}
-            <li class="grey"><a href="{% url 'login' %}" class="button">Book Your Seat</a></li>
-            {% endif %}
-
-        </ul>
-    </div>
-
-    <div class="columns">
-        <ul class="price">
-            <li class="header">Platinum</li>
-            <li class="grey">$ 49.99 / Seat</li>
-            <li>Special Sofa Seats</li>
-            <li>Snacks</li>
-            <li>Welcom Drink</li>
-            <li> + Extra Beverages </li>
-            {% if user.is_authenticated %}
-
-            <li class="grey"><a href="{% url 'event-booked' %}" class="button">Book Your Seat</a></li>
-            {% elif not is_authenticated %}
-            <li class="grey"><a href="{% url 'login' %}" class="button">Book Your Seat</a></li>
-            {% endif %}
-
-        </ul>
-    </div> -->
-
+    
 </body>
 
 </html>

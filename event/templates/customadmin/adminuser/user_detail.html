@@ -1,9 +1,24 @@
-
+{% extends 'customadmin/change_list.html' %}
 {% load static %}
-
+{% load admin_extras %}
+{% load misc_filters %}
 {% load i18n %}
 
 
+<html>
+    <head>
+<style>
+
+.fa-check {
+  color: green;
+}
+
+.fa-remove {
+  color: red;
+}
+</style>
+</head>
+<body>
 {% block page_content %}
     {% csrf_token %}
 
@@ -25,22 +40,18 @@
                         </tr>
                             <tr class="text-left">
                                 <td class="text-center" height="240px" width="480px">
-                                    <img src="{{MEDIA_URL}}{{user_detail.profile_image.url}}" alt="" height="240px" width="480px">
+                                    <img src="{{MEDIA_URL}}{{user_detail.profile_image.url}}" alt="No Image" height="240px" width="480px">
                                 </td>
                                 <td class="h6">
-                                    Fullname : {{user_detail.first_name}} {{user_detail.last_name}}
+                                    Full name : {{user_detail.first_name}} {{user_detail.last_name}}
                                     <hr>
                                     Email : {{user_detail.email}}
                                     <hr>
-                                    Phone : {{user_detail.phone}}
+                                   
                                     <hr>
-                                    Address : {{user_detail.address}}
-                                    <hr>
-                                    Date of Birth : {{user_detail.date_of_birth}}
-                                    <hr>
-                                    Language : {{user_detail.language}}
-                                    <hr>
-                                    Active : {% show_check user_detail.is_active %}
+                                    Active : {%if user.is_active %}<i class="fa fa-check"></i>Yes
+                                    {%else%}<i class="fa fa-remove"></i>
+                                    {% endif%}
                                 </td>
                             </tr>
                         <tr>
@@ -127,4 +138,5 @@
     </div>
 
 {% endblock %}
-
+</body>
+</html>

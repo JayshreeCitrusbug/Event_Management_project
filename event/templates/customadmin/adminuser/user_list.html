@@ -16,7 +16,7 @@
         {% comment %} <div class="ibox-title">
             <div class="ibox-tools">
                 {% if perms.users.add_user %}
-                <a href="{% url opts|admin_urlname:'create' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> Add {{ opts.verbose_name|capfirst }}</a>
+                <a href="#" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> Add {{ opts.verbose_name }}</a>
                 {% endif %}
             </div>
         </div> {% endcomment %}
@@ -30,9 +30,11 @@
                             <th>Email</th>
                             <th>Firstname</th>
                             <th>Lastname</th>
-                            <th>Phone Number</th>
-                            <th>Profile Image</th>
+                            <th>Username</th>
                             <th>Active</th>
+                            <!-- <th>View User</th>
+                            <th>Update User</th>
+                            <th>Delete User</th> -->
                             <th></th>
                         </tr>
                     </thead>
@@ -41,9 +43,11 @@
                             <th>Email</th>
                             <th>Firstname</th>
                             <th>Lastname</th>
-                            <th>Phone Number</th>
-                            <th>Profile Image</th>
+                            <th>Username</th>
                             <th>Active</th>
+                            <!-- <th>View User</th>
+                            <th>Update User</th>
+                            <th>Delete User</th> -->
                             <th></th>
                         </tr>
                     </tfoot>
@@ -53,13 +57,21 @@
                             <td>{{ o.email }}</td>
                             <td>{{ o.first_name }}</td>
                             <td>{{ o.last_name }}</td>
-                            <td>{{ o.phone }}</td>
-                            {% if o.profile_image %}
-                            <td height="80px" width="180px"><img src="{{MEDIA_URL}}{{ o.profile_image.url }}" alt="no image" height="80x" width="180px"></td>
-                            {% else %}
-                            <td>No image</td>
-                            {% endif %}
+                            <td>{{ o.username }}</td>                         
                             <td>{% show_check o.is_active %}</td>
+                            <!-- <td>
+                                <a href="{% url 'customadmin:user-detailview' o.pk %}" class="btn btn-info btn-xs"><i class="fa fa-eye"></i>
+                                </a>
+                                
+                              </td>
+                              <td>
+                                <a href="{% url 'customadmin:user-update' o.pk %}" class='btn btn-primary btn-xs'><i class="fa fa-pencil-square-o"></i>
+                                </a>
+                              </td>
+                              <td>
+                                <a href="{% url 'customadmin:dashboard'%}" class="btn btn-danger btn-xs btn-delete"><i class="fa fa-trash"></i>
+                                </a>
+                              </td> -->
                             <td class="row-actions">
                                 {% include "customadmin/partials/list_row_more_actions.html" %}
                             </td>
@@ -79,10 +91,6 @@
 {{ block.super }}
 <script src="{% static 'customadmin/js/userroles.js' %}"></script>
 
-<script>
-    var pagination_url = "{% url opts|admin_urlname:'list-ajax' %}";
-    $(function () {
-        userroles.user.index();
-    });
-</script>
+
+
 {% endblock %}

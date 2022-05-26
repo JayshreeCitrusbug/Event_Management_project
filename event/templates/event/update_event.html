@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'customadmin/base_section.html' %}
 {% block title %} Evyfy | Update Event {% endblock %}
 {% block content %}
 
@@ -9,14 +9,16 @@
 
     {% csrf_token %}
     {{ form.as_p }}
-    <br/>
-    <br/>
-    <input type="reset" value="Reset" class="btn btn-secondary">
-    <input type="submit" value=" Post " class="btn btn-success">
-    <br/>
+   
+    <div class="modal-footer">
+        <a href="{% url 'customadmin:admin-event-view' %}" class="btn-delete btn btn-secondary"><i class="fa fa-backward"> Back </i></a>
+        <a href="{% url 'customadmin:delete-event' event.pk %}" class="btn-delete btn btn-danger"><i class="fas fa-trash-alt"> Delete </i></a>
+        <button class="btn btn-primary" type="submit"><i class="fa fa-check"> Save </i></button>
+        
+      
+</div>
+<br/>
 </form>
 <br/>
 
 {% endblock %}
-
-<br/>

@@ -1,1 +1,7 @@
-<h1>Confirm tickets</h1>
+{% extends 'base.html' %}
+{% block title %} Evyfy | Confirm ticket {% endblock %}
+{% block content %}
+
+<center><h3> {{request.user.last_name}}, Your ticket is Confirm </h3></center>
+
+{% endblock %}

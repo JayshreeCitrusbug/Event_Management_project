@@ -28,13 +28,13 @@
     </tr>
 
     <tr>
-        <button class="btn btn-outline-info" type="submit"><a href="{% url 'customadmin:price' %}"> Book Your Seat </a></button>
+       
     </tr>
 
 </table>
 <pre>
 
-</pre>{% if user.is_staff %}
+</pre>{% if user.is_staff or user.is_superuser %}
 <a href="{% url 'customadmin:admin-event-view' %}" class="btn btn-secondary"> Back </a>
 {% else %}
 <a href="{% url 'customadmin:event-list' %}" class="btn btn-secondary"> Back </a>

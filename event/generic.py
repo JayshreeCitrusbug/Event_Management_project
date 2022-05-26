@@ -21,8 +21,8 @@ from django.views.generic.dates import DayArchiveView
 from extra_views import CreateWithInlinesView, NamedFormsetsMixin, UpdateWithInlinesView
 from multi_form_view import MultiFormView, MultiModelFormView
 
-from ..mixins import HasPermissionsMixin, ModelOptsMixin, SuccessMessageMixin
-from ..utils import admin_urlname, get_deleted_objects
+from .mixins import HasPermissionsMixin, ModelOptsMixin, SuccessMessageMixin
+from .utils import admin_urlname, get_deleted_objects
 
 MSG_CREATED = '"{}" created successfully.'
 MSG_UPDATED = '"{}" updated successfully.'

@@ -10,77 +10,24 @@
       <p class="card-subtitle text-muted">{{ subtitle }}</p>
     </div>
 
-    {% if user.is_staff %}
-
-
-    {% if  opts.verbose_name_plural == 'Users' %}
-    <div class="float-right lead" style="margin-left: 10px;">      
-      <a href="{% url 'customadmin:export_user_csv' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> Export CSV</a>
-    </div>
-
-    {% elif  opts.verbose_name_plural == 'Creators' %}
-    <div class="float-right lead" style="margin-left: 10px;">      
-      <a href="{% url 'customadmin:creator_export_product_csv' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> Export CSV</a>
-    </div>
-
-
-    {% elif opts.verbose_name_plural == 'Leads' %}
-
-    <div class="float-right lead" style="margin-left: 10px;">      
-      <a href="{% url 'customadmin:export_product_intrest_csv' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> Export CSV</a>
-    </div>
-
-    {% elif opts.verbose_name_plural == 'Groups' %}
-    <div class="float-right lead" style="margin-left: 10px;">      
-      <a href="{% url 'customadmin:export_group_csv' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> Export CSV</a>
-    </div>
-
-    {% elif opts.verbose_name_plural == 'Events' %}
-
-    <div class="float-right lead" style="margin-left: 10px;">      
-      <a href="{% url 'customadmin:export_event_csv' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> Export CSV</a>
-    </div>
-
-    {% elif opts.verbose_name_plural == 'Event Registrations' %}
-
-  <div class="float-right lead" style="margin-left: 10px;">      
-            <a href="{% url 'customadmin:export_event_registration_csv' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> Export CSV</a>
-    </div>
-
-    {% endif %}
-
-
-
-
-
-
 
 
     <div class="float-right lead">
+      {% if user.is_authenticated %}
       
-      {% if opts.verbose_name_plural == 'groups' %}
-
-      <a href="{% url opts|admin_urlname:'create' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> New Role</a>
-
-     
-      {% elif opts.verbose_name_plural == 'Flash Deal' %}
-
-      <a href="{% url 'customadmin:master-flash-deal' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> Flash Deal Sync</a>
-
-      
-      {% elif verbose_name_plural == 'Events' %}
+      {% if opts.verbose_name_plural == 'Events' %}
       <a href="{% url 'customadmin:add-event' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> New Event</a>
 
-    
-      {% elif verbose_name_plural == 'Artists' %}
+      {% elif opts.verbose_name_plural == 'Artists' %}
       <a href="{% url 'customadmin:add-artist' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> New Artist</a>
       
       {% else %}
-      <a href="{% url 'customadmin:dashboard' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> New </a>
+      <a href="{% url 'customadmin:dashboard' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> New User</a>
+
       {% endif %}
-      
+      {% endif %}
     </div>
-    {% endif %}
+    
   </div>
 </header>
 <!-- /card -->

@@ -1,30 +1,32 @@
-{% extends 'customadmin/base_section.html' %}
+
 {% block title %} Evyfy | Delete Event {% endblock %}
 
 
 
 {% block content %}
-<header class="list-header card mb-4">
-    <div class="card-body clearfix">
-      <div class="float-left">
-        <h3 class="card-title">Are you sure ? </h3>
-        <br/>
-        <h5 class="card-title">Delete Event  - <h3>{{ object}}</h3></h5>
-        <p class="card-subtitle text-muted">Are you sure...you want to delete "{{ object}}"?</p>
-      </div>
-<form method="post">
-    {% csrf_token %}
-     
-  
-     
-     
-    
-        
-    </form>
 
-</div>
-</header>
-<button class="btn btn-danger" type="submit"> Yes </button>
-    <a href="{% url 'customadmin:admin-event-view' %}" class="btn btn-secondary"> NO </a>
-    
+<form method="post"></form>
+{% csrf_token %}
+<!-- <header class="list-header card mb-4">
+  <div class="card-body clearfix">
+    <div class="float-left">
+      <h3 class="card-title">Are you sure ? </h3>
+      <br />
+      {% csrf_token %}
+      <h5 class="card-title">Delete Event - <h3>{{ object}}</h3>
+      </h5>
+      <p class="card-subtitle text-muted">Are you sure...you want to delete "{{ object}}"?</p>
+    </div>
+  </div>
+</header> -->
+
+{% include 'copied/confirm_delete.html' %}
+
+</form>
+<!-- <div class="modal-footer">
+
+  <a href="{% url 'customadmin:admin-event-view' %}" class="btn btn-white"><i class="fa fa-times"> Cancel </i></a>
+  <button class="btn btn-danger" type="submit"><i class="fa fa-check"> Yes, I'm Sure </i></button>
+
+</div> -->
 {% endblock %}

@@ -8,9 +8,9 @@ from django.utils import timezone
 class Member(User,PermissionsMixin):
     event_admin = models.BooleanField(default=False)
 
-    # class Meta:
-    #     verbose_name = "User"
-    #     verbose_name_plural = "Users"
+    class Meta:
+        verbose_name = "User"
+        verbose_name_plural = "Users"
         # ordering = ["-created_at"]
     # def __str__(self):
     #     return self.user.name 
@@ -43,13 +43,13 @@ class Event(models.Model):
     description = models.TextField()
     artist = models.ManyToManyField(Artist)
     active = models.BooleanField()
+    
+    def __str__(self):
+        return self.name
 
     class Meta:
         verbose_name = "Event"
         verbose_name_plural = 'Events'
-    
-    def __str__(self):
-        return self.name
 
     # def get_absolute_url(self):
     #     return reverse('event-list')
@@ -68,10 +68,10 @@ class Genre(models.Model):
 
 
 class EventBook(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     seats = models.PositiveIntegerField()
     BookedDate = models.DateTimeField(default=timezone.now)
-    event_id = models.ForeignKey('Event', on_delete=models.CASCADE)
+    event_id = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.user)
+        return str(self.user)+str(' ______|_______')+str(self.event_id)+str(' ______|_______')+str(self.seats)

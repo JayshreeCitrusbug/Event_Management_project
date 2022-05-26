@@ -47,8 +47,8 @@ def admin_urlname(value, arg):
         pattern = "%s:%s-%s" % ('event', 'Member', arg)
     if value.model_name == 'Event':
         pattern = "%s:%s-%s" % ('event', 'Event', arg)
-    # if value.model_name == 'creator':
-    #     pattern = "%s:%s-%s" % ('customadmin', 'creator', arg)
+    if value.model_name == 'Artist':
+        pattern = "%s:%s-%s" % ('event', 'Artist', arg)
     # if value.model_name == 'creatorclass':
     #     pattern = "%s:%s-%s" % ('customadmin', 'creatorclass', arg)
     # if value.model_name == 'stream':

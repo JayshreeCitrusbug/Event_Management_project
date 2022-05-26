@@ -1,0 +1,80 @@
+{% extends 'customadmin/base_section.html' %}
+{% load static %}
+
+{% load admin_extras %}
+{% load misc_filters %}
+
+{% load i18n %}
+
+
+{% block title %}
+    {% if object.pk %}Change{% else %}Add{% endif %} {{ opts.verbose_name }} - {{ opts.verbose_name_plural }}
+{% endblock%}
+
+
+{% block page_header %}
+
+{% if opts.verbose_name_plural == 'Users' %}
+
+{% if object.pk %}Change{% else %}Add{% endif %} New Role
+
+{% else %}
+
+{% if object.pk %}Change{% else %}Add{% endif %} {{ opts.verbose_name }}
+
+{% endif %}
+
+
+    {% endblock%}
+
+
+
+
+
+{% block current_breadcrumb %}
+<li class="breadcrumb-item">
+    <a href="{% url 'customadmin:dashboard' %}">{% trans 'Home' %}</a>
+</li>
+
+<li class="breadcrumb-item">
+    {% if opts.verbose_name_plural == 'Users' %}
+
+    <a href="{% url 'customadmin:user-list' %}">User Roles</a>{% else %}User Roles
+
+    {% else %}
+    <a href="{% url 'customadmin:user-list' %}">{{ opts.verbose_name_plural}}</a>{% else %}{{ opts.verbose_name_plural }}
+
+    {% endif %}
+    
+
+
+</li>
+
+
+
+<li class="breadcrumb-item active">
+
+    {% if opts.verbose_name_plural == 'Users' %}
+
+    {% if add %}{% blocktrans with name=opts.verbose_name %}Add Role {% endblocktrans %}{% else %}{{ object|truncatewords:"18" }}{% endif %}
+
+    {% else %}
+
+    {% if add %}{% blocktrans with name=opts.verbose_name %}Add {{ name }}{% endblocktrans %}{% else %}{{ object|truncatewords:"18" }}{% endif %}
+
+    {% endif %}
+</li>
+
+
+
+{% endblock %}
+
+
+{% block formset_errors %}
+    {% include "customadmin/partials/form_errors.html" with form=form %}
+{% endblock%}
+
+
+{% block page_content %}
+    Change form content goes here.
+{% endblock %}

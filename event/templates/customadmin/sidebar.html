@@ -44,13 +44,13 @@
                     <span class="nav-label">Users</span>
                 </a>
             </li>
-            <li {% if 'Event/' in request.path %}class="active" {% endif %}>
+            <li {% if 'events/' in request.path %}class="active" {% endif %}>
                 <a href="{% url 'customadmin:admin-event-view' %}">
                     <i class="fa fa-calendar-check-o fa-fw fa-2x"></i>
                     <span class="nav-label">Events</span>
                 </a>
             </li>
-            <li {% if 'Artist/' in request.path %}class="active" {% endif %}>
+            <li {% if 'artists/' in request.path %}class="active" {% endif %}>
                 <a href="{% url 'customadmin:admin-artist-view' %}">
                     <i class="fa fa-users fa-fw fa-2x"></i>
                     <span class="nav-label">Artists</span>

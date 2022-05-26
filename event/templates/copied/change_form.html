@@ -8,7 +8,7 @@
 
 
 {% block title %}
-    {% if object.pk %}Change{% else %}Add{% endif %} {{ opts.verbose_name|capfirst }} - {{ opts.verbose_name_plural|capfirst }}
+    {% if object.pk %}Change{% else %}Add{% endif %} {{ opts.verbose_name }} - {{ opts.verbose_name_plural}}
 {% endblock%}
 
 
@@ -20,7 +20,7 @@
 
 {% else %}
 
-{% if object.pk %}Change{% else %}Add{% endif %} {{ opts.verbose_name|capfirst }}
+{% if object.pk %}Change{% else %}Add{% endif %} {{ opts.verbose_name }}
 
 {% endif %}
 
@@ -42,7 +42,7 @@
     {% if has_view_permission %}<a href="{% url opts|admin_urlname:'list' %}">User Roles</a>{% else %}User Roles{% endif %}
 
     {% else %}
-    {% if has_view_permission %}<a href="{% url opts|admin_urlname:'list' %}">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %}
+    {% if has_view_permission %}<a href="{% url opts|admin_urlname:'list' %}">{{ opts.verbose_name_plural }}</a>{% else %}{{ opts.verbose_name_plural }}{% endif %}
 
     {% endif %}
     

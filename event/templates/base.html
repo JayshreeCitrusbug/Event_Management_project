@@ -44,7 +44,7 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li><a class="dropdown-item" href="{% url 'customadmin:about' %}">About US</a></li>
-              <li><a class="dropdown-item" href="{% url 'customadmin:price' %}">Pricing</a></li>
+              <li><a class="dropdown-item" href="{% url 'customadmin:event-booked' %}">Book event</a></li>
               <li><a class="dropdown-item" href="#">Schedule</a></li>
               <li>
                 <hr class="dropdown-divider">
@@ -86,12 +86,14 @@
             </li>
             
           </ul>
-          <button class="btn btn-outline-info" type="submit" style="margin-right: 10px;"><a href="{% url 'customadmin:login' %}"> Buy Tickets </a></button>
+          <!-- <button class="btn btn-outline-info" type="submit" style="margin-right: 10px;"><a href="{% url 'customadmin:login' %}"> Buy Tickets </a></button> -->
 
           <!-- <button class="btn btn-outline-primary" type="submit" style="margin-right: 10px;"><a href="{% url 'customadmin:register' %}"> SignUp </a></button> -->
           {% if user.is_authenticated %}
+          <button class="btn btn-outline-info" type="submit" style="margin-right: 10px;"><a href="{% url 'customadmin:event-booked' %}"> Buy Tickets </a></button>
           <button class="btn btn-outline-danger" type="submit" style="margin-right: 10px;"><a href="{% url 'customadmin:logout' %}"> Logout </a></button>
           {% else %}
+          <button class="btn btn-outline-info" type="submit" style="margin-right: 10px;"><a href="{% url 'customadmin:login' %}"> Buy Tickets </a></button>
           <button class="btn btn-outline-success" type="submit" style="margin-right: 10px;"><a href="{% url 'customadmin:login' %}"> Login </a></button>
           {% endif %}
         </form>

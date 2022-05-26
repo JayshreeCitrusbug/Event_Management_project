@@ -15,6 +15,7 @@
             <th scope="col" width="150">Genre</th>
             <th scope="col" width="200">Event Date</th>
             <th scope="col">Description</th>
+            <!-- <th scope="col">book</th> -->
         </tr>
     </thead>
     <tbody>
@@ -43,6 +44,7 @@
             <td scope="row">{{event.genre}}</td>
             <td>{{event.eventDate}}</td>
             <td>{{event.description}}</td>
+            <!-- <td> <a href="{% url 'customadmin:event-booked' %}"> Book Your Seat </a></td> -->
         </tr>
         {%endfor%}
     </tbody>

@@ -17,11 +17,13 @@
 {% now "d" as day_arg %}
 
 <!doctype html>
-<!-- {% load static %} -->
+{% load static %}
 <html lang="en">
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
 <style>
 
 table {
@@ -83,11 +85,11 @@ tr:nth-child(even) {
         <div class="ibox-title">
           <div class="ibox-tools">
           </div>
-          <h5>Purchased Products</h5>
+          <h5>Admin User</h5>
         </div>
         <div class="ibox-content">
-          <h3 class="no-margins">{{ user_count }}</h3>
-          <small>Total products purchased</small>
+          <h3 class="no-margins">{{ admin_user_count }}</h3>
+          <small>Total admin joined</small>
         </div>
       </div>
     </div>
@@ -97,10 +99,10 @@ tr:nth-child(even) {
         <div class="ibox-title">
           <div class="ibox-tools">
           </div>
-          <h5>Users</h5>
+          <h5>Total Users</h5>
         </div>
         <div class="ibox-content">
-          <h3 class="no-margins">{{ user_count }}</h3>
+          <h3 class="no-margins">{{ total_user_count }}</h3>
           <small>Total services booked</small>
         </div>
       </div>
@@ -130,7 +132,8 @@ tr:nth-child(even) {
               <div class="flot-chart-content" id="flot-dashboard-chart"></div>
             </div>
           </div>
-          <div class="col-lg-3">
+  
+          <!-- <div class="col-lg-3">
             <ul class="stat-list">
               <li>
                 <h2 class="no-margins">14</h2>
@@ -165,7 +168,7 @@ tr:nth-child(even) {
                 </div>
               </li>
             </ul>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

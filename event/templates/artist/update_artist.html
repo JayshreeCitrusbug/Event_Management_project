@@ -1,22 +1,26 @@
-{% extends 'base.html' %}
+{% extends 'customadmin/base_section.html' %}
 {% block title %} Evyfy | Update Artist {% endblock %}
 {% block content %}
 
+
 <br/>
-<h2>Update Event</h2>
+<h2>Update Artist</h2>
 <nbnps></nbnps>
 <form method="POST">
 
     {% csrf_token %}
     {{ form.as_p }}
-    <br/>
-    <br/>
-    <input type="reset" value="Reset" class="btn btn-secondary">
-    <input type="submit" value=" Post " class="btn btn-success">
-    <br/>
+    
+    <div class="modal-footer">
+        <a href="{% url 'customadmin:admin-artist-view' %}" class="btn-delete btn btn-secondary"><i class="fa fa-backward"> Back </i></a>
+        
+        <button class="btn btn-primary" type="submit"><i class="fa fa-check"> Save </i></button>
+        
+      
+</div>
+<br/>
 </form>
 <br/>
 
 {% endblock %}
 
-<br/>

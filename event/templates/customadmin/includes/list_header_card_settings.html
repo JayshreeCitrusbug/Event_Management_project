@@ -13,7 +13,7 @@
     {% if user.is_superuser %}
       {% if has_add_permission and show_button %}
       <div class="float-right lead">
-        <a href="{% url opts|admin_urlname:'create' %}" class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> New {{ opts.verbose_name|capfirst }}</a>
+        <!-- '''hear''' -->
       </div>
       {% endif %}
     {% endif %}
