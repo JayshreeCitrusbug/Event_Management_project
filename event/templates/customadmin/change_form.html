@@ -39,10 +39,9 @@
 <li class="breadcrumb-item">
     {% if opts.verbose_name_plural == 'Users' %}
 
-    <a href="{% url 'customadmin:user-list' %}">User Roles</a>{% else %}User Roles
-
+    <a href="{% url 'customadmin:user-list' %}">User Roles</a>
     {% else %}
-    <a href="{% url 'customadmin:user-list' %}">{{ opts.verbose_name_plural}}</a>{% else %}{{ opts.verbose_name_plural }}
+    <a href="{% url 'customadmin:user-list' %}">{{ opts.verbose_name_plural}}</a>
 
     {% endif %}
     

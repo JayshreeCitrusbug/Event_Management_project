@@ -194,9 +194,10 @@ class AddEventView(CreateView):
     def post(self, request):
         form =self.form_class(request.POST)
         if form.is_valid():
-            Event.active = True
             form.save()
-            return redirect('event-list')
+            form.instance.active = True
+            form.save()
+            return redirect('customadmin:admin-event-view')
         else:
             msg = "Event can not generated please Try Again "
             return HttpResponse(msg)
@@ -230,14 +231,17 @@ class EventCount(View):
 
     def get(self, request, *args, **kwargs):
         # queryset = self.model.objects.getvalues('eventDate')
-        mon = [1,2,,3,4,5,6,7,8,9,10,11,12]
+        mon = []
         count = 0
         queryset = Event.objects.values('eventDate')
         for data in queryset:
             for d,v in data.items():
                 mon.append(v.month)
-                my_dict = {i:mon.count(i) for i in mon}
+                my_dict = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0}
+                for i in mon:
+                    my_dict[i] = mon.count(i)
         print(my_dict)
+        
         #         for i in mon: 
         #             count = mon.count(i)
         # print(i,count)
@@ -249,11 +253,11 @@ class EventCount(View):
                 #     count += 1
                 #     continue
                 # # print(v.month)
-        print('month',mon)
+        # print('month',mon)
         
                 # print(count)
                 
-        print(queryset)
+        # print(queryset)
         return render(request, self.template_name, {'queryset':queryset,'my_dict':my_dict})
 
 # ---------------------------------------------------------------------------------------------------------------

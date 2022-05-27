@@ -42,7 +42,7 @@ class Event(models.Model):
     price = models.PositiveIntegerField()
     description = models.TextField()
     artist = models.ManyToManyField(Artist)
-    active = models.BooleanField()
+    active = models.BooleanField(blank=True, null=True)
     
     def __str__(self):
         return self.name
