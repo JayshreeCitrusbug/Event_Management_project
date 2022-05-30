@@ -1,5 +1,6 @@
 from datetime import *
 from imaplib import _Authenticator
+import json
 from re import template
 from types import MemberDescriptorType
 from urllib import request
@@ -19,7 +20,11 @@ from django.template.loader import get_template
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from event.mixins import HasPermissionsMixin
-from event.forms import  UserNewCreationForm, UserSignUpForm,  AdminLoginForm, AddEventForm,  AddArtistForm, EventBookForm, UserUpdateForm
+from event.forms import  UserNewCreationForm, UserSignUpForm,  AdminLoginForm, AddEventForm,  AddArtistForm, EventBookForm, UserUpdateForm, UserCreationForm
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from .mixins import HasPermissionsMixin, ModelOptsMixin, SuccessMessageMixin
+from .utils import admin_urlname, get_deleted_objects
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 # ,  AdminProfileForm, UpdateEventForm,
 
 from django.contrib import messages
@@ -30,7 +35,10 @@ from django.contrib import messages
 # from django.urls import reverse_lazy
 
 
-
+MSG_CREATED = '"{}" created successfully.'
+MSG_UPDATED = '"{}" updated successfully.'
+MSG_DELETED = '"{}" deleted successfully.'
+MSG_CANCELED = '"{}" canceled successfully.'
 
 # -.-.-.-.-.-.-.-.-.-.-.-.-..-.-.-.-..--.-..-.-.-.-.-.-.-.-.-.-.-.-.-..-.-.-.-..--.-..
 #Home page
@@ -86,6 +94,18 @@ class AdminProfileView(ListView):
         # self.context['showevent'] = Event.objects.all()
         # print('evenrdata',self.context['showevent'])
         # print(type(self.context['showevent']))
+   
+        # queryset = self.model.objects.getvalues('eventDate')
+        mon = []
+        count = 0
+        self.context['queryset'] = Event.objects.values('eventDate')
+        for data in self.context['queryset']:
+            for d,v in data.items():
+                mon.append(v.month)
+                self.context['my_dict'] = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0}
+                for i in mon:
+                    self.context['my_dict'][i] = mon.count(i)
+        print(self.context['my_dict'])
 
         #User count 
         self.context['total_user_count']= User.objects.all().count() - int(User.objects.filter(is_superuser =True).count())
@@ -103,7 +123,10 @@ class AdminProfileView(ListView):
 # ---------------------------------------------------------------------------------------------------------------
 # Users
 # ---------------------------------------------------------------------------------------------------------------
-class UserListView(ListView):
+class UserListView(ListView, LoginRequiredMixin,
+    PermissionRequiredMixin,
+    ModelOptsMixin,
+    HasPermissionsMixin,):
     """View for User listing"""
 
     # paginate_by = 25
@@ -112,6 +135,15 @@ class UserListView(ListView):
     queryset = model.objects.exclude(is_staff=True)
     template_name = "customadmin/adminuser/user_list.html"
     
+    def has_permission(self):
+
+        print('----------------------------is staff------------------------------------')
+        print(self.request.user.is_staff)
+        print('----------------------------is staff------------------------------------')
+        if(self.request.user.is_staff == True):
+            return True
+        else:
+            return super().has_permission()
 
     def get_queryset(self):
         return self.model.objects.exclude(is_staff=True).exclude(email=self.request.user).exclude(email=None)
@@ -123,7 +155,7 @@ class UserListView(ListView):
             ctx["opts"] = self.model._meta
         return ctx
 
-class UserDetailView(DetailView):
+class UserDetailView(DetailView, LoginRequiredMixin, PermissionRequiredMixin, ModelOptsMixin):
     template_name = "customadmin/adminuser/user_detail.html"
     context = {}
 
@@ -131,14 +163,41 @@ class UserDetailView(DetailView):
         self.context['user_detail'] = User.objects.filter(pk=pk).first()
         return render(request, self.template_name, self.context)
 
+class UserCreateView(CreateView,LoginRequiredMixin,
+    PermissionRequiredMixin,
+    SuccessMessageMixin,
+    ModelOptsMixin,
+    HasPermissionsMixin):
+    """View to create User"""
 
-class UserUpdateView(UpdateView):
+    model = User
+    form_class = UserCreationForm
+    template_name = "customadmin/adminuser/user_form.html"
+    permission_required = ("customadmin.add_user",)
+
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super(UserCreateView, self).get_form_kwargs()
+        # kwargs["user"] = self.request.user
+        return kwargs
+
+
+    def get_success_url(self):
+        # opts = self.model._meta
+        return reverse("customadmin:user-list")
+
+
+class UserUpdateView(UpdateView, LoginRequiredMixin,
+    PermissionRequiredMixin,
+    SuccessMessageMixin,
+    ModelOptsMixin,
+    HasPermissionsMixin):
     """View to update User"""
 
     model = User
     form_class = UserUpdateForm
     template_name = "customadmin/adminuser/update_user.html"
     permission_required = ("customadmin.change_user",)
+
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -148,6 +207,75 @@ class UserUpdateView(UpdateView):
     def get_success_url(self):
         # opts = self.model._meta
         return reverse("customadmin:user-list")
+
+
+class UserDeleteView(DeleteView):
+    """View to delete User"""
+
+    model = User
+    template_name = "customadmin/adminuser/delete_user.html"
+    permission_required = ("customadmin.delete_user",)
+
+    # def get_success_message(self):
+    #     return MSG_DELETED.format(self.object)
+
+    # def get_success_url(self):
+    #     print("MyDeleteView:: get_success_url")
+    #     opts = self.model._meta
+    #     return reverse(admin_urlname(opts, "list"))
+
+    # def delete(self, request, *args, **kwargs):
+    #     """Override delete method."""
+    #     response = super().delete(request, *args, **kwargs)
+    #     messages.success(self.request, self.get_success_message())
+    #     if self.request.is_ajax():
+    #         response_data = {}
+    #         response_data["result"] = True
+    #         response_data["message"] = self.get_success_message()
+    #         return JsonResponse(response_data)
+    #     return response
+
+    # def get_context_data(self, **kwargs):
+    #     """Get deletable objects."""
+    #     # Todo: Move to deleted objects mixin and reference self?
+    #     ctx = super().get_context_data(**kwargs)
+    #     # print(ctx["opts"].__dict__.keys())
+
+    #     # Do some extra work here
+    #     opts = self.model._meta
+
+    #     # Populate deleted_objects, a data structure of all related objects that
+    #     # will also be deleted.
+    #     # deleted_objects, model_count, perms_needed, protected = self.get_deleted_objects([obj], request)
+    #     deleted_objects, model_count, protected = get_deleted_objects([self.object])
+
+    #     object_name = str(opts.verbose_name)
+
+    #     # if perms_needed or protected:
+    #     if protected:
+    #         title = ("Cannot delete %(name)s") % {"name": object_name}
+    #     else:
+    #         title = ("Are you sure?")
+
+    #     ctx["title"] = title
+    #     ctx["deleted_objects"] = deleted_objects
+    #     ctx["model_count"] = dict(model_count).items()
+    #     ctx["protected"] = protected
+    #     return ctx
+
+    # def has_permission(self):
+
+    #     print('----------------------------is staff------------------------------------')
+    #     print(self.request.user.is_staff)
+    #     print('----------------------------is staff------------------------------------')
+    #     if(self.request.user.is_staff == True):
+    #         return True
+    #     else:
+    #         return super().has_permission()
+
+    def get_success_url(self):
+        # opts = self.model._meta
+        return reverse_lazy("customadmin:user-list")
 #END of custom admin user's code .....................................................
 
 
@@ -223,42 +351,27 @@ class DeleteEventView(DeleteView):
          return reverse_lazy('customadmin:admin-event-view')
 
 
-class EventCount(View):
-    model = Event
-    
-    template_name = 'customadmin/chart.html'
-    
-
-    def get(self, request, *args, **kwargs):
-        # queryset = self.model.objects.getvalues('eventDate')
-        mon = []
-        count = 0
-        queryset = Event.objects.values('eventDate')
-        for data in queryset:
-            for d,v in data.items():
-                mon.append(v.month)
-                my_dict = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0}
-                for i in mon:
-                    my_dict[i] = mon.count(i)
-        print(my_dict)
-        
-        #         for i in mon: 
-        #             count = mon.count(i)
-        # print(i,count)
-                    
-                # if v.month not in mon:
-                #     mon.append(v.month)
-                #     count = count + 1
-                # elif v.month in mon:
-                #     count += 1
-                #     continue
-                # # print(v.month)
-        # print('month',mon)
-        
-                # print(count)
+# class EventCount(View):
+#     model = Event
+#     template_name = 'customadmin/dashboard.html'
+#     def get(self, request, *args, **kwargs):
+#         # queryset = self.model.objects.getvalues('eventDate')
+#         mon = []
+#         count = 0
+#         queryset = Event.objects.values('eventDate')
+#         for data in queryset:
+#             for d,v in data.items():
+#                 mon.append(v.month)
+#                 my_dict = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0}
+#                 for i in mon:
+#                     my_dict[i] = mon.count(i)
+#         print(my_dict)
+#         """# dic = json.dumps(my_dict)
+#         # print("DIC", dic)
+#         # print(type(dic))
                 
-        # print(queryset)
-        return render(request, self.template_name, {'queryset':queryset,'my_dict':my_dict})
+#         # print(queryset)"""
+#         return render(request, self.template_name, {'my_dict': my_dict})
 
 # ---------------------------------------------------------------------------------------------------------------
 # Artist

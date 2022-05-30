@@ -17,7 +17,7 @@ urlpatterns = [
     path('dashboard/',views.AdminProfileView.as_view(), name='dashboard'),
     #Admin pannel event artist page
     path('events/', views.Eventview.as_view(), name = 'admin-event-view'),
-    path('event/chart/', views.EventCount.as_view(), name = 'event-chart'),
+    # path('event/chart/', views.EventCount.as_view(), name = 'event-chart'),
     # path('events/<int:pk>/detail/', views.EventAdminDetailView.as_view(), name = 'admin-event-detail-view'),
     path('artists/', views.Artistview.as_view(), name = 'admin-artist-view'),
     #Profile
@@ -26,7 +26,9 @@ urlpatterns = [
     #User 
     path("users/", views.UserListView.as_view(), name="user-list"),
     path("users/detail/<int:pk>", views.UserDetailView.as_view(), name="user-detailview"),
+    path("users/create/",views.UserCreateView.as_view(), name = 'user-create'),
     path('users/update/<int:pk>',views.UserUpdateView.as_view(), name = 'user-update'),
+    path("users/delete/<int:pk>/", views.UserDeleteView.as_view(), name="user-delete"),
     #Logout
     path('account/logout/', views.Logout.as_view(),{'next_page': 'home'}, name='logout'),
     ##Event

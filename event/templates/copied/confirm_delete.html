@@ -59,19 +59,34 @@
                 {% include "customadmin/includes/object_delete_summary.html" %}
                 <h4>{% trans "Objects" %}</h4>
                 <ul>{{ object|truncatewords:"18" }}</ul>
+            
             {% endif %}
 
         </div>
     </div>
 
     <div class="modal-footer">
-        <a href="{% url 'customadmin:admin-event-view' %}" class="btn btn-white"><i class="fa fa-times"></i> Cancel</a>
+        
+        {% if opts.verbose_name_plural == 'Events' %}
+        <a href="{% url 'customadmin:admin-event-view' %}" class="btn btn-white"><i class="fa fa-times"></i> Cancel Event</a>
+        <button class="btn btn-danger" type="submit"><i class="fa fa-check"></i> Yes, I'm Sure</button>
+      
+
+        {% elif opts.verbose_name_plural == 'IUsers' %}
+        
         <button class="btn btn-danger" type="submit"><i class="fa fa-check"></i> Yes, I'm Sure</button>
         
+        {%else%}
+        <!-- <a href="{% url 'customadmin:dashboard' %}" class="btn btn-white"><i class="fa fa-times"></i> Cancel</a> -->
+        <button class="btn btn-danger" type="submit"><i class="fa fa-check"></i> Yes, I'm Sure</button>
+
+        {% endif %}
+       
+
         {% if not perms_lacking and not protected and has_delete_permission %}
         {% comment %} <input type="submit" value="Yes, I'm Sure" class="btn btn-danger"/> {% endcomment %}
-        
         {% endif %}
     </div>
+   
 </form>
 {% endblock page_content %}
