@@ -4,10 +4,10 @@ from rest_framework.authtoken.models import Token
 
 
 
-# class UserListingSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = '__all__'
+class UserListingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        exclude = ['password',"is_staff","is_superuser","is_active","groups", "user_permissions"]
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):

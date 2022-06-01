@@ -1,6 +1,6 @@
 
-from .event_serializer import EventListingSerializer
-from .artist_serializer import ArtistListingSerializer
-from .user_serializer import  UserRegisterSerializer, UserLoginSerializer
+from .event_serializer import EventListingSerializer,  EventAddSerializer
+from .artist_serializer import ArtistListingSerializer, ArtistAddSerializer
+from .user_serializer import  UserListingSerializer, UserRegisterSerializer, UserLoginSerializer
 
 # UserListingSerializer,

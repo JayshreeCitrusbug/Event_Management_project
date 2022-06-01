@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from event.models import User
-from api.serializers import UserRegisterSerializer, UserLoginSerializer
+from api.serializers import UserListingSerializer, UserRegisterSerializer, UserLoginSerializer
 from mysite.permissions import get_pagination_response
 from mysite.helpers import custom_response, serialized_response, get_object
 from rest_framework import status
@@ -11,17 +11,17 @@ import datetime
 import random
 
 
-# class UserListingAPIView(APIView):
-#     """
-#     Event listing View
-#     """
-#     serializer_class = UserListingSerializer
+class UserListingAPIView(APIView):
+    """
+    User listing View
+    """
+    serializer_class = UserListingSerializer
 
-#     def get(self, request):
-#         testimonials = User.objects.filter(is_active=True)
-#         result = get_pagination_response(testimonials, request, self.serializer_class, context = {"request": request})
-#         message = "Users fetched Successfully!"
-#         return custom_response(True, status.HTTP_200_OK, message, result)
+    def get(self, request):
+        testimonials = User.objects.filter(is_active=True)
+        result = get_pagination_response(testimonials, request, self.serializer_class, context = {"request": request})
+        message = "All Users data fetched Successfully!"
+        return custom_response(True, status.HTTP_200_OK, message, result)
 
 
 
@@ -63,7 +63,7 @@ class LoginAPIView(APIView):
             serializer = self.serializer_class(account, context={'request':request})
             return custom_response(True, status.HTTP_200_OK, "Login Successful!", serializer.data)
         else:
-            message = "Email/password combination invalid"
+            message = "UserName/password combination invalid"
             return custom_response(False, status.HTTP_400_BAD_REQUEST, message)
 
 
