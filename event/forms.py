@@ -264,17 +264,17 @@ class AddArtistForm(forms.ModelForm):
         }
 
 class EventBookForm(forms.ModelForm):
-    # book = forms.ModelMultipleChoiceField(widget=forms.RadioSelect,queryset=EventBook.objects.all(),required=True)
-        # class Meta:
-        #     model = EventBook
-        #     fields = ['seats','BookedDate','event_id']
+   
     class Meta:
         model = EventBook
-        # fields = '__all__'
         fields = ['seats','BookedDate','event_id']
 
         widgets = {
-            'seat':forms.NumberInput(attrs={'class':'form-control','placeholder':'Select Seats'}),
+            'seats':forms.NumberInput(attrs={'class':'form-control','placeholder':'Select Seats'}),
             'event_id':forms.Select(attrs={'class':'form-select','placeholder':'Select Event'}),
     
         }
+         # book = forms.ModelMultipleChoiceField(widget=forms.RadioSelect,queryset=EventBook.objects.all(),required=True)
+        # class Meta:
+        #     model = EventBook
+        #     fields = ['seats','BookedDate','event_id']

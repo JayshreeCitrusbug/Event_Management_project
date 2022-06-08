@@ -465,7 +465,7 @@ class EventBookView(View):
     def get(self, request):
         data = EventBook.objects.filter(user=request.user)
         # print("booking data",data)
-    
+       
         print(request.user.id)
         # form = self.form.instance.event_id = pk
         # print(form)
@@ -473,11 +473,25 @@ class EventBookView(View):
 
     def post(self,request):
         form =self.form_class(request.POST)
+        errors = form.non_field_errors()
+        field_errors = [ (field.label, field.errors) for field in form]
+        print("field_errors", field_errors)
+        print("form",form.is_valid())
         if form.is_valid():
-            form.save()
-            form.instance.user = request.user
-            form.save()
-            return render(request , 'event/success.html')
+            
+            seat = form.cleaned_data.get('seats')
+            # select_event = form.changed_data.get('event_id')
+            avl_seat = Event.objects.filter('seatAvailable')
+            print("seat",seat,"avl_seat",avl_seat)
+            if avl_seat>seat:
+                avl_seat = avl_seat - seat
+                # form.save()
+                # form.instance.BookedDate = timezone.now()
+                form.save()
+                form.instance.user = request.user
+                form.save()
+                return HttpResponse("Success")
+            # return render(request , 'event/success.html')
         else:
             msg = "Can not Book seats Please try again "
             return HttpResponse(msg)

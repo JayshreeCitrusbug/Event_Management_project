@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %} Evyfy | Add Artist {% endblock %}
 {% block content %}
-
+{% if user.is_staff or user.is_superuser %}
 <br/>
 <h2>Add New Artist</h2>
 <nbnps></nbnps>
@@ -16,7 +16,9 @@
     <br/>
 </form>
 <br/>
-
+{% else %}
+<center><h2>Not authorized for add Artist</h2></center>
+{% endif %}
 {% endblock %}
 
 <br/>

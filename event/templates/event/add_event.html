@@ -1,14 +1,16 @@
 {% extends 'customadmin/base_section.html' %}
 {% block title %} Evyfy | Add Event {% endblock %}
 {% block content %}
-
+{% if user.is_staff or user.is_superuser %}
 <br/>
 <h2>Add New Event</h2>
 <nbnps></nbnps>
 <form method="POST">
 
     {% csrf_token %}
+    
     {{ form.as_p }}
+    
     
     <div class="modal-footer">
         <a href="{% url 'customadmin:admin-event-view' %}" class="btn btn-secondary"><i class="fa fa-backward"> Back </i></a>
@@ -20,7 +22,9 @@
    
 </form>
 <br/>
-
+{% else %}
+<center><h2>You are Not Authorized for add Event</h2></center>
+{% endif %}
 {% endblock %}
 
 <br/>

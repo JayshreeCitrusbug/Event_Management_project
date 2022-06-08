@@ -1,15 +1,17 @@
-from functools import partial
-from logging import exception
-
 from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from event.models import Event
-from api.serializers import EventListingSerializer, EventAddSerializer
+from api.serializers import EventListingSerializer, EventAddSerializer, EventSerializer
 from mysite.permissions import get_pagination_response
 from mysite.helpers import custom_response
 from rest_framework import status
 
+class EventAPIView(APIView):
+    def get(self,request):
+        queryset = Event.objects.all()
+        serializer = EventSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 class EventListingAPIView(APIView):
     """

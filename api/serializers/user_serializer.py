@@ -17,7 +17,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()
     token = serializers.SerializerMethodField(read_only=True)
     username = serializers.CharField(required=True)
-    password = serializers.CharField(write_only=True, required=False)
+    password = serializers.CharField(write_only=True, required=True)
     confirm_password = serializers.CharField(read_only=True, required=False)
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
