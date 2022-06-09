@@ -35,7 +35,7 @@ class Artist(models.Model):
 
 class Event(models.Model):
     name = models.CharField(max_length=150 , blank=False)
-    genre =  models.ForeignKey('Genre', on_delete=models.CASCADE)
+    genre =  models.ForeignKey('Genre', on_delete=models.CASCADE, related_name='events')
     eventDate =  models.DateTimeField()
     lastDateBook = models.DateTimeField()
     seatAvailable = models.PositiveIntegerField()

@@ -64,7 +64,9 @@ class EventAddAPIView(APIView):
 
     def post(self, request):
         # serializer =self.serializer_class(request.POST)
-        serializer = self.serializer_class(data=request.POST)
+        serializer = self.serializer_class(data=request.data)
+        print("serializer data", serializer.initial_data)
+        print("is valid", serializer.is_valid())
         if serializer.is_valid():
             instance = serializer.save()
             # print(serializer)
@@ -72,6 +74,7 @@ class EventAddAPIView(APIView):
             instance.save()
             message = "Event generated successfully!"
             result = serializer.data
+            print("s",serializer.data)
             return custom_response(True, status.HTTP_200_OK, message, result)
         else:
             message = "Event can not generated please Try Again.."

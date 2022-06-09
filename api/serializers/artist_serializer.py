@@ -1,12 +1,18 @@
 from rest_framework import fields, serializers
 from event.models import Artist, Event
+from api.serializers.event_serializer import EventSerializer
 
 
 class ArtistListingSerializer(serializers.ModelSerializer):
-    # name = serializers.SlugRelatedField(many= True, read_only = True, slug_field="name")
     class Meta:
         model = Artist
-        fields = ['name', 'age']
+        fields = ['name', 'age','description']
+
+
+class ArtistListUseInEventFetch(serializers.ModelSerializer):
+    class Meta:
+        model = Artist
+        fields = ['name']
 
 
 class ArtistAddSerializer(serializers.ModelSerializer):
@@ -21,19 +27,18 @@ class ArtistAddSerializer(serializers.ModelSerializer):
         model = Artist
         fields = '__all__'
     
-class ArtistEventSerializer(serializers.ModelSerializer):
+class ArtistEventSerializer(serializers.Serializer):
     """
-    Artist data with Event
+    Event by Artist 
     """
-    # event = serializers.SerializerMethodField(read_only=True)
+    events = EventSerializer(many=True)
+    artist = ArtistListUseInEventFetch()
     class Meta:
-        model = Artist
-        fields = ['id']
+        fields = ['artist', 'events']
+        
+        
 
-    # def get_event(self,request):
-    #     query = Event.objects.all()
-    #     serializers = ArtistEventSerializer(query, many=False)
-    #     return serializers.data
+    
 
 
 # class ArtistUpdateSerializer(serializers.ModelSerializer):

@@ -1,18 +1,38 @@
 from rest_framework import fields, serializers
 from rest_framework.response import Response
-from event.models import Genre
-# from api.serializers.event_serializer import EventSerializer
+from event.models import Genre, Event
+from api.serializers.event_serializer import EventGenre
 
 class GenreListingSerializer(serializers.ModelSerializer):
-    # event_name = EventSerializer(many=True, read_only=True)
-
     class Meta:
         model = Genre
         fields = ['id','name']
-        
-    # def get_event_name(self, pk):
-    #     genre_event_query = Event.objects.filter(
-    #             event_id=pk)
-    #     serializer = EventSerializer(genre_event_query, many=True)
+  
+
+class GenreListUseInEventFetch(serializers.ModelSerializer):
+       class Meta:
+        model = Genre
+        fields = ['name']
+
+
+class GenreAddSerializer(serializers.ModelSerializer):
+    """
+    Genre Add serializer
+    """    
+    class Meta:
+        model = Genre
+        fields = "__all__"
+
+
+class GenreEventSerializer(serializers.Serializer):
+    """
+    Event by genre
+    """
+    events = EventGenre(many=True)
+    genre = GenreListUseInEventFetch()
     
-    #     return Response(serializer.data)
+    class Meta:
+        fields = ["genre", "events"]
+    
+        
+
