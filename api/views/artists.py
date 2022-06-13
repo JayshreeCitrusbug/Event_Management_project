@@ -4,66 +4,75 @@ from multiprocessing import context
 from reprlib import aRepr
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import viewsets
+from rest_framework.generics import ListAPIView
 from event.models import Artist, Event
 from api.serializers import ArtistListingSerializer, ArtistAddSerializer, ArtistEventSerializer
-from mysite.permissions import get_pagination_response
-from mysite.helpers import custom_response
+# from mysite.permissions import get_pagination_response
+# from mysite.permissions import PageNumberPagination
+
+from mysite.helpers import custom_response, get_object
 from django.shortcuts import get_object_or_404, render
 from rest_framework import status
+from mysite.permissions import MyPagination
+from mysite.permissions import IsAccountOwner, IsAdminUser
 import json
 
 
-class ArtistListingAPIView(APIView):
+class ArtistListingAPIView(ListAPIView):
     """
     Artist listing View
     """
+#Method -1 -> Use ListAPIView
+    queryset = Artist.objects.all()
+    serializer_class = ArtistListingSerializer
+    pagination_class = MyPagination
+
+#Method -2 -> Use APIView
+    
     # serializer_class = ArtistListingSerializer
+    # def get(self, request):
+    #     lists = Artist.objects.all()
+    #     page_size = request.data['limit']
+        
+    #     result = get_pagination_response(lists, request,self.serializer_class,  page_size, context = {"request": request})
 
-    def get(self, request):
-        artists = Artist.objects.all()
-        # event = Event.objects.all()
+    #     message = "Artist list fetched Successfully!"
+    #     return custom_response(True, status.HTTP_200_OK, message, result)
+    
+#Method -3 -> Use APIView
+    # def get(self, request):
+    #     artists = Artist.objects.all()
+    #     queryset = ArtistListingSerializer(artists, many=True)
+    #     return Response(queryset.data)
 
-        queryset = ArtistListingSerializer(artists, many=True)
-        return Response(queryset.data)
-        # result = get_pagination_response(artists, request, self.serializer_class, context = {"request": request})
-        # message = "ALL Artists data fetched Successfully!"
-        # return custom_response(True, status.HTTP_200_OK, message, result)
-
-
-    # def list(self, request):
-    #     queryset = Artist.objects.all()
-    #     serializer = ArtistListingSerializer(queryset, many=True)
-    #     return Response(serializer.data)
-
-    # def retrieve(self, request, pk=None):
-    #     queryset = Artist.objects.all()
-    #     artist = get_object_or_404(queryset, pk=pk)
-    #     serializer = ArtistListingSerializer(artist)
-    #     return Response(serializer.data)
 
 class ArtistDetailAPIView(APIView):
     """
     Retrieve, Artist instance.
     """
     serializer_class = ArtistListingSerializer
+    permission_classes = (IsAccountOwner,)
 
     def get(self, request, pk, format=None):
-        details = Artist.objects.filter(id=pk)
-        result = get_pagination_response(details, request, self.serializer_class, context = {"request": request})
-        message = "Artist Specific Detail fetched Successfully!"
-        return custom_response(True, status.HTTP_200_OK, message, result)
-
-
+        artist_detail = get_object(Artist, pk)
+        if not artist_detail:
+            message = "Artist Does not exits..!!"
+            return custom_response(False, status.HTTP_400_BAD_REQUEST, message)
+        serializer = self.serializer_class(artist_detail, context={"request":request})
+        message = "Artist detail fetched Successfully!"
+        return custom_response(True, status.HTTP_200_OK, message, serializer.data)
+       
+    
 
 class ArtistAddAPIView(APIView):
     """
     Add, Event instance.
     """
     serializer_class = ArtistAddSerializer
+    permission_classes = (IsAdminUser,)
 
     def post(self, request):
-        serializer = self.serializer_class(data = request.POST)
+        serializer = self.serializer_class(data = request.data)
         if serializer.is_valid():
             serializer.save()
             message = "Artist Created successfully!"
@@ -79,19 +88,31 @@ class ArtistUpdateAPIView(APIView):
     Update, Artist instance.
     """
     serializer_class = ArtistAddSerializer
+    permission_classes = (IsAdminUser,)
+
+
+    #Method writtten in helpers.py
     # def get_object(self, pk):
     #     try:
     #         return Artist.objects.get(pk=pk)
     #     except exception as e:
     #         return f'Error, {e}'
 
-    def patch(self, request, pk):
-        artists = Artist.objects.get(pk=pk)
+    def patch(self, request, pk, format=None):
+        artists = get_object(Artist, pk)
+        if not artists :
+            message = "Artist Does not exits..!!"
+            return custom_response(True, status.HTTP_200_OK, message)
         serializer = self.serializer_class(artists, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            message = "Artist Updated Successfully!"
+            result = (serializer.data)
+            return custom_response(True, status.HTTP_200_OK, message, result)
+        else:
+            message = "Artist can not Updated please Try Again.."
+            return custom_response(False, status.HTTP_400_BAD_REQUEST, message)
+            # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ArtistEventListAPIView(APIView):

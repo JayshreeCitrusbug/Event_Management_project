@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from event.models import User
 from api.serializers import UserListingSerializer, UserRegisterSerializer, UserLoginSerializer
 from mysite.permissions import get_pagination_response
@@ -6,22 +7,27 @@ from mysite.helpers import custom_response, serialized_response, get_object
 from rest_framework import status
 from django.contrib.auth import authenticate, login, logout
 from mysite.permissions import IsAccountOwner
+from mysite.permissions import MyPagination
 import math
 import datetime
 import random
 
 
-class UserListingAPIView(APIView):
+class UserListingAPIView(ListAPIView):
     """
     User listing View
     """
+    queryset = User.objects.filter(is_active=True)
     serializer_class = UserListingSerializer
+    pagination_class = MyPagination
 
-    def get(self, request):
-        testimonials = User.objects.filter(is_active=True)
-        result = get_pagination_response(testimonials, request, self.serializer_class, context = {"request": request})
-        message = "All Users data fetched Successfully!"
-        return custom_response(True, status.HTTP_200_OK, message, result)
+#Method -2 -> Use APIView
+    # serializer_class = UserListingSerializer
+    # def get(self, request):
+    #     users = User.objects.filter(is_active=True)
+    #     result = get_pagination_response(users, request, self.serializer_class, context = {"request": request})
+    #     message = "All Users data fetched Successfully!"
+    #     return custom_response(True, status.HTTP_200_OK, message, result)
 
 
 
@@ -87,7 +93,7 @@ class UserProfileAPI(APIView):
     serializer_class = UserRegisterSerializer
     permission_classes = (IsAccountOwner,)
 
-    def put(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         user_profile = get_object(User, request.user.pk)
         if not user_profile:
             message = "User not found!"

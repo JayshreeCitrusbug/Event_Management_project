@@ -1,5 +1,6 @@
 from rest_framework import fields, serializers
-from event.models import Event, Artist
+from event.models import Event
+from rest_framework.authtoken.models import Token
 # from .artist_serializer import ArtistListingSerializer
 # from .genre_serializer import GenreListingSerializer
 
@@ -25,8 +26,11 @@ class EventListingSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Event
-        fields = ['name','description','eventDate','lastDateBook','seatAvailable','price','genre','artist']
+        fields = '__all__'
         depth = 2
+
+    def get_token(self, obj):
+        return f"Token {Token.objects.get_or_create(user=obj)[0]}"
 
 class EventAddSerializer(serializers.ModelSerializer):
     """
@@ -44,7 +48,10 @@ class EventAddSerializer(serializers.ModelSerializer):
         model = Event
         fields = '__all__'
 
+    def get_token(self, obj):
+        return f"Token {Token.objects.get_or_create(user=obj)[0]}"
 
+        
 # class EventUpdateSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = Event

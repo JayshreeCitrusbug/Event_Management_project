@@ -24,7 +24,7 @@ import pickle
 
 # Pagination
 PAGINATOR = PageNumberPagination()
-PAGINATOR.page_size = 10
+# PAGINATOR.page_size = 10
 PAGINATOR_PAGE_SIZE = PAGINATOR.page_size
 
 

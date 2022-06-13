@@ -15,16 +15,17 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     User Profile serializer
     """
     email = serializers.EmailField()
-    token = serializers.SerializerMethodField(read_only=True)
     username = serializers.CharField(required=True)
     password = serializers.CharField(write_only=True, required=True)
-    confirm_password = serializers.CharField(read_only=True, required=False)
+    # confirm_password = serializers.CharField(write_only=True, required=True)
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
 
+    token = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = User
-        fields = ['id', 'email', 'username', 'first_name', 'last_name','token', 'password', 'confirm_password']
+        fields = ['id', 'email', 'username', 'first_name', 'last_name','token', 'password']
     
         extra_kwargs = {"password":
                                 {"write_only": True}
@@ -51,7 +52,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
     User Profile serializer
     """
     username = serializers.CharField(required=True)
-    password = serializers.CharField(write_only=True, required=False)
+    password = serializers.CharField(write_only=True)
     token = serializers.SerializerMethodField(read_only=True)
 
     class Meta:

@@ -2,32 +2,37 @@ from django.http import JsonResponse
 from api import serializers
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from event.models import Genre, Event
 from api.serializers import GenreListingSerializer, GenreAddSerializer, GenreEventSerializer
 from mysite.permissions import get_pagination_response
-from mysite.helpers import custom_response
+from mysite.helpers import custom_response, get_object
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from mysite.permissions import MyPagination
+from mysite.permissions import IsAccountOwner, IsAdminUser
 
-class GenreListingAPIView(APIView):
+class GenreListingAPIView(ListAPIView):
     """
     Genre listing View
     """
+    
+    queryset = Genre.objects.all()
     serializer_class = GenreListingSerializer
+    pagination_class = MyPagination
 
-    def get(self, request):
-        geners = Genre.objects.all()
-        serializer = GenreListingSerializer(geners, many =True)
-        return Response(serializer.data)
-        # result = get_pagination_response(geners, request, self.serializer_class, context = {"request": request})
-        # message = "All Genres data fetched Successfully!"
-        # return custom_response(True, status.HTTP_200_OK, message, result)
+    # def get(self, request):
+    #     geners = Genre.objects.all()
+    #     serializer = GenreListingSerializer(geners, many =True)
+    #     return Response(serializer.data)
+        
 
 class GenreAddAPIView(APIView):
     """
     Genre Create View
     """
     serializer_class = GenreAddSerializer
+    permission_classes = (IsAdminUser,)
 
     def post(self, request):
         serializer = self.serializer_class(data = request.data)
@@ -46,14 +51,24 @@ class GenreUpdateAPIView(APIView):
     Update, Artist instance.
     """
     serializer_class = GenreAddSerializer
+    permission_classes = (IsAdminUser,)
 
     def patch(self, request, pk):
-        genres = Genre.objects.get(pk=pk)
+        genres = get_object(Genre, pk)
+        if not genres :
+            message = "Gener Does not exits..!!"
+            return custom_response(True, status.HTTP_200_OK, message)
         serializer = self.serializer_class(genres, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            message = "Genre Updated Successfully!"
+            result = serializer.data
+            return custom_response(True, status.HTTP_200_OK, message, result)
+        else:
+            message = "Genre can not Updated please Try Again.."
+            return custom_response(False, status.HTTP_400_BAD_REQUEST, message)
+        #     return Response(serializer.data)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GenreEventAPIView(APIView):
