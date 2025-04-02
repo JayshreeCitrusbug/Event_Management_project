@@ -121,7 +121,6 @@ def listEvents():
     return created_event
 
 def createEvents(service_name, service_date, service_time, name, address, phone, email):
-    print(service_name)
     service = build("calendar", "v3", credentials=credentials)
     result = service.calendarList().list().execute()
 
